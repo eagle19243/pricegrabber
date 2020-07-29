@@ -1,0 +1,54 @@
+env:
+  browser: true
+  es6: true
+  node: true
+
+extends:
+  - "plugin:react/recommended"
+  - "plugin:mocha/recommended"
+  - 'standard'
+
+parser: 'babel-eslint'
+
+parserOptions:
+  ecmaVersion: 2019
+  ecmaFeatures:
+    classes: true
+    experimentalObjectRestSpread: true
+    jsx: true
+  sourceType: module
+
+plugins:
+  - mocha
+  - react
+
+rules:
+  no-console:
+    - error
+    - allow:
+      - error
+      - info
+      - time
+      - timeEnd
+      - timeLog
+      - warn
+
+  linebreak-style:
+    - error
+    - unix
+
+  # overwrite default standard.js style
+  semi:
+    - error
+    - always
+
+  # allow to use UNSAFE React functions
+  # https://reactjs.org/docs/react-component.html#unsafe_componentwillmount
+  camelcase:
+    - error
+    - allow:
+      - "^UNSAFE_"
+
+settings:
+  react:
+    version: 16.6.3
