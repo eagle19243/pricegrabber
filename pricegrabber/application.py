@@ -1,4 +1,4 @@
-"""application.py -- top-level web application for wayback-gsheets.
+"""application.py -- top-level web application for pricegrabber.
 """
 import logging.config
 from celery import Celery
