@@ -16,7 +16,7 @@ def load_config():
     try:
         cfg_file = os.environ.get('PRICE_GRABBER_CONF')
         if not cfg_file:
-            cfg_file = os.getcwd() + '/config.yaml'
+            cfg_file = os.getcwd() + '/config.yml'
             logging.warning('using default configuration from %s', cfg_file)
         with open(cfg_file, 'rt') as cfg:
             config = yaml.safe_load(cfg.read())
