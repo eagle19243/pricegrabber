@@ -88,7 +88,7 @@ local_settings.py
 
 .env
 config.json
-conf.yml
+config.yml
 db.sqlite3
 !logs/error.log
 

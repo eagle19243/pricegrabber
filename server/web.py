@@ -4,7 +4,7 @@ from celery.result import AsyncResult
 from celery.exceptions import CeleryError
 from flask import Flask, request, jsonify, redirect, send_from_directory
 
-APP = Flask(__name__, static_folder='build', static_url_path='/')
+APP = Flask(__name__, static_folder='../build', static_url_path='/')
 
 
 def get_app(config):
