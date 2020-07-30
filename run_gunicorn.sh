@@ -12,4 +12,4 @@ OPTS=(
 )
 
 #Run gunicorn
-gunicorn "${OPTS[@]}" pricegrabber.application:APP
+gunicorn "${OPTS[@]}" server.application:APP
