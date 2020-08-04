@@ -12,7 +12,7 @@ class Todo(object):
         self.fields = {
             'name': 'string',
             'cost': 'string',
-            'link': 'string',
+            'url': 'string',
             'code': 'string',
             'created': 'datetime',
             'updated': 'datetime',
