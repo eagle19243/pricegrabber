@@ -56,8 +56,9 @@ export default function ProductTable(props) {
         options={{
           headerStyle: {
             backgroundColor: classes[tableHeaderColor + 'TableHeader'].color
-          }
-        }}
+          },
+          actionsColumnIndex: -1
+        }} 
         {...rest}
       />
     </div>

@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // core components
 import Navbar from "components/Navbars/Navbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-
+import ProductDetail from "views/ProductDetail/ProductDetail"
 import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
@@ -27,11 +27,14 @@ const switchRoutes = (
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
+            exact
           />
         );
       }
       return null;
     })}
+    <Route path="/admin/products/new" exact key="product_new" component={ProductDetail} />
+    <Route path="/admin/products/:id" exact key="product_detail" component={ProductDetail} />
     <Redirect from="/admin" to="/admin/dashboard" />
   </Switch>
 );
