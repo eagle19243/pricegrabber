@@ -23,8 +23,8 @@ export function login(email, password) {
     API.login(email, password).then(response => {
       const token = response.data;
       dispatch(receiveToken(token));
-      // dispatch(doInit());
-      // dispatch(push('/app'));
+      dispatch(doInit());
+      dispatch(push('/app'));
     }).catch(error => {
       dispatch(authError(error.response.data));
     });
@@ -41,7 +41,6 @@ export function logout() {
     dispatch({
       type: LOGOUT_SUCCESS,
     });
-    dispatch(push('/login'));
   }
 }
 

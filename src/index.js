@@ -27,13 +27,14 @@ export const store = createStore(
   )
 );
 
-store.dispatch(doInit());
+const dispatch = store.dispatch;
+dispatch(doInit());
 
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <Switch>
-        <UserRoute path="/app" dispatch={store.dispatch} component={Admin} />
+        <UserRoute path="/app" dispatch={dispatch} component={Admin} />
         <AuthRoute path="/login" exact component={Login} />
         <Redirect from="/" to="/app/dashboard" />
       </Switch>

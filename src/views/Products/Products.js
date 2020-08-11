@@ -1,6 +1,6 @@
 import React from "react";
+import { push } from "connected-react-router";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -32,11 +32,11 @@ export default function Products() {
   ];
 
   const onAddProduct = (event) => {
-    window.location.pathname = '/app/products/new';
+    push('/app/products/new');
   };
 
   const onEditProduct = (event, data) => {
-    window.location.pathname = '/app/products/123';
+    push('/app/products/123');
   };
 
   const onRemoveProduct = (event, data) => {
