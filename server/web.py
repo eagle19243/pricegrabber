@@ -20,9 +20,6 @@ def get_app(config):
     APP.config.update(CELERYD_HIJACK_ROOT_LOGGER=False)
     APP.config.update(config)
 
-    scraper = Scraper()
-    scraper.run()
-
     return APP
 
 

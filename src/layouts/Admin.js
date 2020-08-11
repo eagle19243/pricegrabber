@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import ProductDetail from "views/ProductDetail/ProductDetail";
-import routes from "routes.js";
+import { Routes } from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
@@ -20,8 +20,8 @@ let ps;
 
 const switchRoutes = (
   <Switch>
-    {routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+    {Routes.map((prop, key) => {
+      if (prop.layout === "/app") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -33,9 +33,9 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Route path="/admin/products/new" exact component={ProductDetail} />
-    <Route path="/admin/products/:id" exact component={ProductDetail} />
-    <Redirect from="/admin" to="/admin/dashboard" />
+    <Route path="/app/products/new" exact component={ProductDetail} />
+    <Route path="/app/products/:id" exact component={ProductDetail} />
+    <Redirect from="/app" to="/app/dashboard" />
   </Switch>
 );
 
@@ -56,7 +56,7 @@ export default function Admin({ ...rest }) {
     setMobileOpen(!mobileOpen);
   };
   const getRoute = () => {
-    return window.location.pathname !== "/admin/maps";
+    return window.location.pathname !== "/app/maps";
   };
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -85,7 +85,7 @@ export default function Admin({ ...rest }) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={routes}
+        routes={Routes}
         logoText={"Price Grabber"}
         logo={logo}
         image={image}
@@ -96,7 +96,7 @@ export default function Admin({ ...rest }) {
       />
       <div className={classes.mainPanel} ref={mainPanel}>
         <Navbar
-          routes={routes}
+          routes={Routes}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}
         />

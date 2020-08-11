@@ -17,6 +17,13 @@ const login = (email, password) => {
   });
 }
 
+const getUser = (token) => {
+  return api.post("user/", {
+    token: token
+  })
+}
+
 export default {
-  login
-};
+  login,
+  getUser,
+}

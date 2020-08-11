@@ -32,11 +32,11 @@ export default function Products() {
   ];
 
   const onAddProduct = (event) => {
-    window.location.pathname = '/admin/products/new';
+    window.location.pathname = '/app/products/new';
   };
 
   const onEditProduct = (event, data) => {
-    window.location.pathname = '/admin/products/123';
+    window.location.pathname = '/app/products/123';
   };
 
   const onRemoveProduct = (event, data) => {

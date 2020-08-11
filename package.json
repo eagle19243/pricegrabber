@@ -9,6 +9,7 @@
     "apisauce": "^1.1.2",
     "chartist": "0.10.1",
     "classnames": "2.2.6",
+    "connected-react-router": "^6.8.0",
     "history": "4.10.1",
     "jsonwebtoken": "^8.5.1",
     "material-table": "^1.68.0",
@@ -17,9 +18,12 @@
     "react": "16.13.1",
     "react-chartist": "0.14.3",
     "react-dom": "16.13.1",
+    "react-redux": "^7.2.1",
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.1",
-    "react-swipeable-views": "0.13.9"
+    "react-swipeable-views": "0.13.9",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
