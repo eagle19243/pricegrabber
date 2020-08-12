@@ -2,7 +2,7 @@ from ..factory.validation import Validator
 from ..factory.database import Database
 
 
-class Todo(object):
+class Product(object):
     def __init__(self):
         self.validator = Validator()
         self.db = Database()
@@ -11,23 +11,27 @@ class Todo(object):
 
         self.fields = {
             'name': 'string',
-            'cost': 'string',
-            'url': 'string',
             'code': 'string',
-            'created': 'datetime',
-            'updated': 'datetime',
+            'url': 'string',
+            'cost': 'float',
+            'profit': 'float',
+            'price': 'array',
+            'last_updated': 'datetime',
+            'review_count': 'int',
+            'review_rating': 'float',
+            'competition': 'array'
         }
 
-        self.create_required_fields = ['title', 'body']
+        self.create_required_fields = ['code', 'url', 'cost', 'profit']
 
         # Fields optional for CREATE
         self.create_optional_fields = []
 
         # Fields required for UPDATE
-        self.update_required_fields = ['title', 'body']
+        self.update_required_fields = []
 
         # Fields optional for UPDATE
-        self.update_optional_fields = []
+        self.update_optional_fields = ['code', 'url', 'cost', 'profit']
 
     def create(self, product):
         # Validator will throw error if invalid

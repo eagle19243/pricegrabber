@@ -21,6 +21,7 @@ export function login(email, password) {
     }
   
     API.login(email, password).then(response => {
+      console.log('response', response);
       const token = response.data;
       dispatch(receiveToken(token));
       dispatch(doInit());

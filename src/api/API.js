@@ -11,7 +11,7 @@ const api = apisauce.create({
 });
 
 const login = (email, password) => {
-  return api.post("login/", {
+  return api.post("auth/", {
     email,
     password
   });

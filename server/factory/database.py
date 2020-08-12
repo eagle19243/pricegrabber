@@ -7,8 +7,8 @@ from ..util import load_config
 class Database(object):
     def __init__(self):
         config = load_config()
-        self.client = MongoClient(config['db']['url'])
-        self.db = self.client[config['db']['name']]
+        self.client = MongoClient(config['DB']['url'])
+        self.db = self.client[config['DB']['name']]
 
     def insert(self, element, collection_name):
         element['created'] = datetime.now()
