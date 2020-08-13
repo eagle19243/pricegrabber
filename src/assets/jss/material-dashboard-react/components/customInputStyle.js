@@ -2,23 +2,27 @@ import {
   primaryColor,
   dangerColor,
   successColor,
-  grayColor,
-  defaultFont
+  defaultFont,
+  whiteColor,
+  grayColor
 } from "assets/jss/material-dashboard-react.js";
 
 const customInputStyle = {
   disabled: {
     "&:before": {
-      backgroundColor: "transparent !important"
+      borderColor: "transparent !important"
     }
   },
   underline: {
     "&:hover:not($disabled):before,&:before": {
-      borderColor: grayColor[4] + " !important",
+      borderColor: grayColor[4] + "!important",
       borderWidth: "1px !important"
     },
     "&:after": {
       borderColor: primaryColor[0]
+    },
+    "& + p": {
+      fontWeight: "300"
     }
   },
   underlineError: {
@@ -37,33 +41,54 @@ const customInputStyle = {
     fontWeight: "400",
     fontSize: "14px",
     lineHeight: "1.42857",
-    letterSpacing: "unset"
+    top: "10px",
+    letterSpacing: "unset",
+    "& + $underline": {
+      marginTop: "0px"
+    }
   },
   labelRootError: {
-    color: dangerColor[0]
+    color: dangerColor[0] + " !important"
   },
   labelRootSuccess: {
-    color: successColor[0]
-  },
-  feedback: {
-    position: "absolute",
-    top: "18px",
-    right: "0",
-    zIndex: "2",
-    display: "block",
-    width: "24px",
-    height: "24px",
-    textAlign: "center",
-    pointerEvents: "none"
-  },
-  marginTop: {
-    marginTop: "16px"
+    color: successColor[0] + " !important"
   },
   formControl: {
-    paddingBottom: "10px",
-    margin: "27px 0 0 0",
+    margin: "0 0 17px 0",
+    paddingTop: "27px",
     position: "relative",
-    verticalAlign: "unset"
+    verticalAlign: "unset",
+    "& svg,& .fab,& .far,& .fal,& .fas,& .material-icons": {
+      color: grayColor[14]
+    }
+  },
+  whiteUnderline: {
+    "&:hover:not($disabled):before,&:before": {
+      backgroundColor: whiteColor
+    },
+    "&:after": {
+      backgroundColor: whiteColor
+    }
+  },
+  input: {
+    color: grayColor[14],
+    height: "unset",
+    "&,&::placeholder": {
+      fontSize: "14px",
+      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+      fontWeight: "400",
+      lineHeight: "1.42857",
+      opacity: "1"
+    },
+    "&::placeholder": {
+      color: grayColor[3]
+    }
+  },
+  whiteInput: {
+    "&,&::placeholder": {
+      color: whiteColor,
+      opacity: "1"
+    }
   }
 };
 

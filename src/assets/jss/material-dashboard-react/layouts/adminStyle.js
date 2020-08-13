@@ -30,6 +30,10 @@ const appStyle = theme => ({
   container,
   map: {
     marginTop: "70px"
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff"
   }
 });
 

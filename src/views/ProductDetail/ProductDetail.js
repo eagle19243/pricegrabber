@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
@@ -14,11 +16,10 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CardIcon from "components/Card/CardIcon.js";
 
+import { addProduct, updateProduct } from "actions/ProductActions";
+
 import {
-  successColor,
-  whiteColor,
   grayColor,
-  hexToRgb
 } from "assets/jss/material-dashboard-react.js";
 
 const styles = {
@@ -54,8 +55,51 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Settings() {
+function ProductDetail({ dispatch, match }) {
   const classes = useStyles();
+  const productId = match.params.id;
+  const [code, setCode] = React.useState("");
+  const [codeState, setCodeState] = React.useState("");
+  const [url, seturl] = React.useState("");
+  const [urlState, seturlState] = React.useState("");
+  const [cost, setCost] = React.useState("");
+  const [profit, setProfit] = React.useState("");
+
+  const validateURL = value => {
+    try {
+      new URL(value);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  const validateRequired = value => {
+    if (value.length >= 1) {
+      return true;
+    }
+    return false;
+  }
+
+  const doSave = () => {
+    if (codeState === "") {
+      setCodeState("error");
+    }
+
+    if (urlState === "") {
+      seturlState("error");
+    }
+
+    if (codeState === "success" && urlState === "success") {
+      dispatch(addProduct({
+        code: code,
+        url: url,
+        cost: Number(cost),
+        profit: Number(profit)
+      }));
+    }
+  }
+
   return (
     <div>
       <GridContainer>
@@ -65,10 +109,22 @@ export default function Settings() {
               <GridContainer>
                 <GridItem xs={12} sm={6} md={4}>
                   <CustomInput
+                    success={codeState === "success"} 
+                    error={codeState === "error"}
                     labelText="Code"
                     id="code"
                     formControlProps={{
                       fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        if (validateRequired(event.target.value)) {
+                          setCodeState("success");
+                        } else {
+                          setCodeState("error");
+                        }
+                        setCode(event.target.value)
+                      }
                     }}
                   />
                 </GridItem>
@@ -76,10 +132,22 @@ export default function Settings() {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={8}>
                   <CustomInput
+                    success={urlState === "success"}
+                    error={urlState === "error"}
                     labelText="Product URL"
                     id="url"
                     formControlProps={{
                       fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        if (validateURL(event.target.value)) {
+                          seturlState("success");
+                        } else {
+                          seturlState("error");
+                        }
+                        seturl(event.target.value)
+                      }
                     }}
                   />
                 </GridItem>
@@ -92,6 +160,9 @@ export default function Settings() {
                     formControlProps={{
                       fullWidth: true
                     }}
+                    inputProps={{
+                      onChange: (event) => setCost(event.target.value)
+                    }}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={3}>
@@ -101,12 +172,15 @@ export default function Settings() {
                     formControlProps={{
                       fullWidth: true
                     }}
+                    inputProps={{
+                      onChange: (event) => setProfit(event.target.value)
+                    }}
                   />
                 </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary">Save</Button>
+              <Button color="primary" onClick={doSave}>Save</Button>
             </CardFooter>
           </Card>
         </GridItem>
@@ -160,3 +234,12 @@ export default function Settings() {
     </div>
   );
 }
+
+const mapStateToProps = ({ product }) => {
+  const { isFetching } = product;
+  return {
+    isFetching: isFetching,
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(ProductDetail));

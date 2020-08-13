@@ -37,7 +37,7 @@ class Product(object):
         # Validator will throw error if invalid
         self.validator.validate(product, self.fields, self.create_required_fields, self.create_optional_fields)
         res = self.db.insert(product, self.collection_name)
-        return 'Inserted Id ' + res
+        return res
 
     def find(self, product):  # find all
         return self.db.find(product, self.collection_name)

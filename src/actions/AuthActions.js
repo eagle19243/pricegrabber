@@ -1,14 +1,10 @@
 import jwt from "jsonwebtoken";
 import { push } from "connected-react-router";
 import API from "api/API";
-
-export const AUTH_FAILURE = 'AUTH_FAILURE';
-export const AUTH_INIT_SUCCESS = 'AUTH_INIT_SUCCESS';
-export const AUTH_INIT_ERROR = 'AUTH_INIT_ERROR';
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+import {
+  AUTH_FAILURE, AUTH_INIT_SUCCESS, AUTH_INIT_ERROR, LOGIN_REQUEST,
+  LOGIN_SUCCESS, LOGOUT_REQUEST, LOGOUT_SUCCESS
+} from "types";
 
 export function login(email, password) {
   return (dispatch) => {

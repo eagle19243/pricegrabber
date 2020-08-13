@@ -27,12 +27,13 @@ import styles from "assets/jss/material-dashboard-react/views/loginPageStyle.js"
 
 const useStyles = makeStyles(styles);
 
-function Login(props) {
-  const { dispatch } = props;
+function Login({ dispatch }) {
   const classes = useStyles();
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   const [email, setEmail] = React.useState("");
+  const [emailState, setEmailState] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [passwordState, setPasswordState] = React.useState("");
 
   React.useEffect(() => {
     let id = setTimeout(function() {
@@ -44,9 +45,35 @@ function Login(props) {
     };
   });
 
+  const validateEmail = value => {
+    const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (emailRex.test(value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const validatePassword = value => {
+    if (value.length >= 1) {
+      return true;
+    }
+    return false;
+  }
+
   const doLogin = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+
+    if (emailState === "") {
+      setEmailState("error");
+    }
+    
+    if (passwordState === "") {
+      setPasswordState("error");
+    }
+
+    if (emailState === "success" && passwordState === "success") {
+      dispatch(login(email, password));
+    }
   }
 
   return (
@@ -63,7 +90,9 @@ function Login(props) {
               </CardHeader>
               <CardBody>
                 <CustomInput
-                  labelText="Email..."
+                  success={emailState === "success"}
+                  error={emailState === "error"}
+                  labelText="Email Address *"
                   id="email"
                   formControlProps={{
                     fullWidth: true
@@ -74,11 +103,21 @@ function Login(props) {
                         <Email className={classes.inputAdornmentIcon} />
                       </InputAdornment>
                     ),
-                    onChange: (event) => setEmail(event.target.value)
+                    onChange: (event) => {
+                      if (validateEmail(event.target.value)) {
+                        setEmailState("success");
+                      } else {
+                        setEmailState("error");
+                      }
+                      setEmail(event.target.value);
+                    },
+                    type: "email"
                   }}
                 />
                 <CustomInput
-                  labelText="Password"
+                  success={passwordState === "success"}
+                  error={passwordState === "error"}
+                  labelText="Password *"
                   id="password"
                   formControlProps={{
                     fullWidth: true
@@ -93,7 +132,14 @@ function Login(props) {
                     ),
                     type: "password",
                     autoComplete: "off",
-                    onChange: (event) => setPassword(event.target.value)
+                    onChange: (event) => {
+                      if (validatePassword(event.target.value)) {
+                        setPasswordState("success");
+                      } else {
+                        setPasswordState("error");
+                      }
+                      setPassword(event.target.value)
+                    }
                   }}
                 />
               </CardBody>

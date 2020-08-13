@@ -1,11 +1,15 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Navbar from "components/Navbars/Navbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import ProductDetail from "views/ProductDetail/ProductDetail";
@@ -41,7 +45,7 @@ const switchRoutes = (
 
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+function Admin({isFetching, ...rest }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -51,6 +55,7 @@ export default function Admin({ ...rest }) {
   const [color, setColor] = React.useState("blue");
   const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [backdropState, setBackdropState] = React.useState(false);
   
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -109,6 +114,18 @@ export default function Admin({ ...rest }) {
           <div className={classes.map}>{switchRoutes}</div>
         )}
       </div>
+      <Backdrop className={classes.backdrop} open={isFetching}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
+
+const mapStateToProps = ({ app }) => {
+  const { isFetching } = app;
+  return {
+    isFetching: isFetching
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(Admin));

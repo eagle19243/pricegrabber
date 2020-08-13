@@ -6,6 +6,8 @@ from flask_bcrypt import Bcrypt
 from flask import Flask, request, jsonify, send_from_directory
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
 from .models.user import User
+from .models.product import Product
+from .models.configuration import Configuration
 from .util import load_config, JSONEncoder
 
 config = load_config()
@@ -23,6 +25,8 @@ jwt = JWTManager(APP)
 APP.json_encoder = JSONEncoder
 
 user_model = User()
+product_model = Product()
+configuration_model = Configuration()
 
 
 def get_app():
@@ -87,6 +91,44 @@ def auth_user():
         'success': True,
         'data': current_user
     })
+
+
+@APP.route('/product/add', methods=['POST'])
+@jwt_required
+def add_product():
+    data = request.get_json()
+    product_id = product_model.create(data)
+    return jsonify({
+        'success': True,
+        'data': product_id
+    })
+
+
+@APP.route('/product/get', methods=['POST'])
+@jwt_required
+def get_product():
+    data = request.get_json()
+    product_id = data['productId']
+
+    if product_id:
+        data = product_model.find_by_id(product_id)
+    else:
+        data = product_model.find({})
+    return jsonify({
+        'success': True,
+        'data': data
+    })
+
+
+@APP.route('/product/remove', methods=['POST'])
+@jwt_required
+def remove_product():
+    data = request.get_json()
+    success = product_model.delete(data['productId'])
+    return jsonify({
+        'success': success
+    })
+
 
 
 

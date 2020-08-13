@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { push } from "connected-react-router";
 // @material-ui/core components
 // core components
@@ -9,38 +11,32 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import ProductTable from "components/ProductTable/ProductTable";
+import { getProduct, removeProduct } from "actions/ProductActions";
 
-export default function Products() {
-  const tableColumns = [
-    {title: "Name", field: "name"},
-    {title: "Surename", field: "surname"},
-    {title: 'Birth Year', field: 'birthYear', type: 'numeric'},
-    {
-      title: 'Birth Place',
-      field: 'birthCity',
-      lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
+function Products({dispatch, tableData, isFetched}) {
+  React.useEffect(() => {
+    if (!isFetched) {
+      dispatch(getProduct());
     }
-  ];
-  const tableData = [
-    { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
-    {
-      name: 'Zerya Betül',
-      surname: 'Baran',
-      birthYear: 2017,
-      birthCity: 34,
-    },
+  });
+
+  const tableColumns = [
+    {title: "Code", field: "code"},
+    {title: "URL", field: "url"},
+    {title: 'Cost', field: 'cost'},
+    {title: 'Profit', field: 'profit'}
   ];
 
   const onAddProduct = (event) => {
-    push('/app/products/new');
+    dispatch(push('/app/products/new'));
   };
 
   const onEditProduct = (event, data) => {
-    push('/app/products/123');
+    dispatch(push(`/app/products/${data._id}`));
   };
 
   const onRemoveProduct = (event, data) => {
-
+    dispatch(removeProduct(data._id));
   };
 
   const actions=[
@@ -80,3 +76,13 @@ export default function Products() {
     </GridContainer>
   );
 }
+
+const mapStateToProps = ({ product }) => {
+  const { tableData, isFetched } = product;
+  return {
+    tableData: tableData,
+    isFetched: isFetched
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(Products));

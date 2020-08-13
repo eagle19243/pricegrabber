@@ -4,9 +4,7 @@ import config from "config";
 const baseURL = config.api_url;
 const api = apisauce.create({
   baseURL,
-  headers: {
-    // Here if necessary
-  },
+  headers: {},
   timeout: 30000
 });
 
@@ -26,7 +24,43 @@ const getUser = (token) => {
   })
 }
 
+const addProduct = (product) => {
+  return api.post('product/add', product);
+}
+
+const getProduct = (productId = null) => {
+  return api.post('product/get', {
+    productId: productId
+  });
+}
+
+const removeProduct = (productId = null) => {
+  return api.post('product/remove', {
+    productId: productId
+  });
+}
+
+const updateProduct = (product) => {
+  return api.post('product/update', {
+    product: product
+  });
+}
+
+const getConfig = () => {
+  return api.post('product/get');
+}
+
+const updateConfig = (config) => {
+  return api.post('configuration/update', config);
+}
+
 export default {
   login,
   getUser,
+  addProduct,
+  getProduct,
+  removeProduct,
+  updateProduct,
+  getConfig,
+  updateConfig
 }
