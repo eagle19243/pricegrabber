@@ -31,7 +31,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Settings() {
+export default function Configurations() {
   const classes = useStyles();
   return (
     <div>

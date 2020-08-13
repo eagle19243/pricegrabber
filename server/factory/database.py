@@ -34,6 +34,14 @@ class Database(object):
 
         return found
 
+    def find_one(self, criteria, collection_name):
+        found = self.find(criteria, collection_name)
+
+        if len(found) > 0:
+            return found[0]
+        else:
+            return None
+
     def find_by_id(self, id, collection_name):
         found = self.db[collection_name].find_one({'_id': ObjectId(id)})
 

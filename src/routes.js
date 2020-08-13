@@ -4,9 +4,9 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Settings from "@material-ui/icons/Settings";
 // core components/views for Admin layout
-import DashboardPage from "views/Dashboard/Dashboard.js";
-import SettingsPage from "views/Settings/Settings.js";
-import ProductsPage from "views/Products/Products.js";
+import DashboardPage from "views/Dashboard/Dashboard";
+import ConfigurationsPage from "views/Configurations/Configurations";
+import ProductsPage from "views/Products/Products";
 import { isAuthenticated, logout } from "actions/AuthActions";
 
 export const Routes = [
@@ -25,10 +25,10 @@ export const Routes = [
     layout: "/app"
   },
   {
-    path: "/settings",
-    name: "Settings",
+    path: "/configurations",
+    name: "Configurations",
     icon: Settings,
-    component: SettingsPage,
+    component: ConfigurationsPage,
     layout: "/app"
   }
 ];

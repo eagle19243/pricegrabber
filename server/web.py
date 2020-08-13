@@ -45,7 +45,7 @@ def index(path=None):
 
 
 @APP.route('/auth', methods=['POST'])
-def auth_user():
+def login():
     """auth endpoint
     """
     data = request.get_json()
@@ -57,15 +57,36 @@ def auth_user():
     if user and flask_bcrypt.check_password_hash(user['password'], password):
         del user['password']
         access_token = create_access_token(identity=data)
-        refresh_token = create_refresh_token(identity=data)
-        user['token'] = access_token
-        user['refresh'] = refresh_token
         return jsonify({
             'success': True,
-            'data': user
+            'data': access_token
         }), 200
     else:
         return jsonify({
             'success': False,
             'message': 'invalid email or password'
         }), 401
+
+
+@APP.route('/register', methods=['POST'])
+def register_user():
+    data = request.get_json()
+    data['password'] = flask_bcrypt.generate_password_hash(data['password'])
+    user_id = user_model.create(data)
+    return jsonify({
+        'success': True,
+        'data': user_id
+    })
+
+
+@APP.route('/user', methods=['POST'])
+@jwt_required
+def auth_user():
+    current_user = get_jwt_identity()
+    return jsonify({
+        'success': True,
+        'data': current_user
+    })
+
+
+

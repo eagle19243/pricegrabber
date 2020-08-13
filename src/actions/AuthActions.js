@@ -21,13 +21,12 @@ export function login(email, password) {
     }
   
     API.login(email, password).then(response => {
-      console.log('response', response);
-      const token = response.data;
+      const token = response.data.data;
       dispatch(receiveToken(token));
       dispatch(doInit());
       dispatch(push('/app'));
     }).catch(error => {
-      dispatch(authError(error.response.data));
+      dispatch(authError(error.message));
     });
   }
 }
@@ -42,6 +41,7 @@ export function logout() {
     dispatch({
       type: LOGOUT_SUCCESS,
     });
+    dispatch(push('/login'));
   }
 }
 
@@ -84,7 +84,7 @@ export function doInit() {
       const token = localStorage.getItem('token');
 
       if (token) {
-        currentUser = await getUser();
+        currentUser = await getUser(token);
       }
 
       dispatch({
@@ -104,5 +104,5 @@ export function doInit() {
 
 async function getUser(token) {
   const response = await API.getUser(token);
-  return response.data;
+  return response.data.data;
 }

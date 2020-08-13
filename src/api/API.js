@@ -11,14 +11,17 @@ const api = apisauce.create({
 });
 
 const login = (email, password) => {
-  return api.post("auth/", {
+  return api.post("auth", {
     email,
     password
   });
 }
 
 const getUser = (token) => {
-  return api.post("user/", {
+  api.setHeaders({
+    Authorization: 'Bearer ' + token
+  });
+  return api.post("user", {
     token: token
   })
 }

@@ -32,7 +32,7 @@ class User(object):
         return self.db.find_by_id(id, self.collection_name)
 
     def find_by_email(self, email):
-        return self.db.find({'email': email}, self.collection_name)
+        return self.db.find_one({'email': email}, self.collection_name)
 
     def update(self, id, user):
         self.validator.validate(user, self.fields, self.update_required_fields, self.update_optional_fields)
