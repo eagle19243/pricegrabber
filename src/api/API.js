@@ -17,10 +17,10 @@ const login = (email, password) => {
 
 const getUser = (token) => {
   api.setHeaders({
-    Authorization: 'Bearer ' + token
+    Authorization : 'Bearer ' + token
   });
   return api.post("user", {
-    token: token
+    token : token
   })
 }
 
@@ -30,19 +30,20 @@ const addProduct = (product) => {
 
 const getProduct = (productId = null) => {
   return api.post('product/get', {
-    productId: productId
+    productId : productId
   });
 }
 
 const removeProduct = (productId = null) => {
   return api.post('product/remove', {
-    productId: productId
+    productId : productId
   });
 }
 
-const updateProduct = (product) => {
+const updateProduct = (productId, product) => {
   return api.post('product/update', {
-    product: product
+    productId : productId,
+    product : product
   });
 }
 

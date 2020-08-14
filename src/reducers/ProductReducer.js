@@ -5,7 +5,7 @@ import {
 
 const INITIAL_STATE = {
   tableData: [],
-  isFetched: false
+  currentProduct: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -14,17 +14,19 @@ export default (state = INITIAL_STATE, action) => {
 
   switch (type)  {
     case PRODUCT_GET_SUCCESS:
-      return Object.assign({}, state, {
-        tableData: payload.tableData,
-        isFetched: true
-      });
+      return {
+        ...state,
+        tableData: payload.tableData || state.tableData,
+        currentProduct: payload.currentProduct || state.currentProduct,
+      };
     case PRODUCT_REMOVE_SUCCESS:
       const tableData = state.tableData.filter((row) => {
         return row._id != payload.productId;
       });
-      return Object.assign({}, state, {
+      return {
+        ...state,
         tableData: tableData
-      });
+      };
     default:
       return state;
   }

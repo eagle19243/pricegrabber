@@ -13,12 +13,10 @@ import CardBody from "components/Card/CardBody.js";
 import ProductTable from "components/ProductTable/ProductTable";
 import { getProduct, removeProduct } from "actions/ProductActions";
 
-function Products({dispatch, tableData, isFetched}) {
+function Products({dispatch, tableData}) {
   React.useEffect(() => {
-    if (!isFetched) {
-      dispatch(getProduct());
-    }
-  });
+    dispatch(getProduct());
+  }, []);
 
   const tableColumns = [
     {title: "Code", field: "code"},
@@ -78,10 +76,9 @@ function Products({dispatch, tableData, isFetched}) {
 }
 
 const mapStateToProps = ({ product }) => {
-  const { tableData, isFetched } = product;
+  const { tableData } = product;
   return {
-    tableData: tableData,
-    isFetched: isFetched
+    tableData: tableData
   }
 }
 

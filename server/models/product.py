@@ -47,7 +47,7 @@ class Product(object):
 
     def update(self, id, product):
         self.validator.validate(product, self.fields, self.update_required_fields, self.update_optional_fields)
-        return self.db.update(id, product,self.collection_name)
+        return self.db.update(id, product, self.collection_name)
 
     def delete(self, id):
         return self.db.delete(id, self.collection_name)

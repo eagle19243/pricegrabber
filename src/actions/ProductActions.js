@@ -23,13 +23,22 @@ export function getProduct(productId) {
   return (dispatch) => {
     dispatch(startLoading());
 
-    API.getProduct().then(response => {
-      dispatch({
-        type: PRODUCT_GET_SUCCESS,
-        payload: {
-          tableData: response.data.data
-        }
-      });
+    API.getProduct(productId).then(response => {
+      if (productId) {
+        dispatch({
+          type: PRODUCT_GET_SUCCESS,
+          payload: {
+            currentProduct: response.data.data
+          }
+        });
+      } else {
+        dispatch({
+          type: PRODUCT_GET_SUCCESS,
+          payload: {
+            tableData: response.data.data
+          }
+        });
+      }
       dispatch(stopLoading());
     }).catch(error => {
       console.log(error.message);
@@ -42,7 +51,6 @@ export function removeProduct(productId) {
     dispatch(startLoading());
 
     API.removeProduct(productId).then(response => {
-      console.log(response);
       if (response.data.success) {
         dispatch({
           type: PRODUCT_REMOVE_SUCCESS,
@@ -58,5 +66,14 @@ export function removeProduct(productId) {
   }
 }
 
-export function updateProduct(product) {
+export function updateProduct(productId, product) {
+  return (dispatch) => {
+    dispatch(startLoading());
+
+    API.updateProduct(productId, product).then(response => {
+      dispatch(stopLoading());
+    }).catch(error => {
+      console.log(error.message);
+    });
+  }
 }

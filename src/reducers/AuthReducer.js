@@ -16,20 +16,23 @@ export default (state = INITIAL_STATE, action) => {
 
   switch (type)  {
     case AUTH_FAILURE:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isFetching: false,
         errorMessage: payload
-      });
+      };
     case AUTH_INIT_SUCCESS:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         currentUser: payload.currentUser || null,
         loadingInit: false,
-      });
+      };
     case AUTH_INIT_ERROR:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         currentUser: null,
         loadingInit: false,
-      });
+      };
     case LOGIN_REQUEST:
     case LOGIN_SUCCESS:
     case LOGOUT_REQUEST:

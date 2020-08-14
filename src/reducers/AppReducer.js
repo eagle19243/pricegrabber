@@ -12,13 +12,15 @@ export default (state = INITIAL_STATE, action) => {
 
   switch (type)  {
     case START_LOADING:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isFetching: true
-      });
+      };
     case STOP_LOADING:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isFetching: false
-      });
+      };
     default:
       return state;
   }

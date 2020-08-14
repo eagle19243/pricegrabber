@@ -104,6 +104,18 @@ def add_product():
     })
 
 
+@APP.route('/product/update', methods=['POST'])
+@jwt_required
+def update_product():
+    data = request.get_json()
+    product_id = data['productId']
+    product = data['product']
+    success = product_model.update(product_id, product)
+    return jsonify({
+        'success': success
+    })
+
+
 @APP.route('/product/get', methods=['POST'])
 @jwt_required
 def get_product():

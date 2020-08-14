@@ -16,7 +16,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CardIcon from "components/Card/CardIcon.js";
 
-import { addProduct, updateProduct } from "actions/ProductActions";
+import { addProduct, updateProduct, getProduct } from "actions/ProductActions";
 
 import {
   grayColor,
@@ -55,7 +55,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-function ProductDetail({ dispatch, match }) {
+function ProductDetail({ dispatch, match, currentProduct }) {
   const classes = useStyles();
   const productId = match.params.id;
   const [code, setCode] = React.useState("");
@@ -64,6 +64,18 @@ function ProductDetail({ dispatch, match }) {
   const [urlState, seturlState] = React.useState("");
   const [cost, setCost] = React.useState("");
   const [profit, setProfit] = React.useState("");
+
+  React.useEffect(() => {
+    dispatch(getProduct(productId));
+  }, []);  
+  React.useEffect(() => {
+    if (currentProduct) {
+      setCode(currentProduct.code);
+      seturl(currentProduct.url);
+      setCost(currentProduct.cost);
+      setProfit(currentProduct.profit);
+    }
+  }, [currentProduct]);
 
   const validateURL = value => {
     try {
@@ -91,12 +103,21 @@ function ProductDetail({ dispatch, match }) {
     }
 
     if (codeState === "success" && urlState === "success") {
-      dispatch(addProduct({
-        code: code,
-        url: url,
-        cost: Number(cost),
-        profit: Number(profit)
-      }));
+      if (productId) {
+        dispatch(updateProduct(productId, {
+          code: code,
+          url: url,
+          cost: Number(cost),
+          profit: Number(profit)
+        }));
+      } else {
+        dispatch(addProduct({
+          code: code,
+          url: url,
+          cost: Number(cost),
+          profit: Number(profit)
+        }));
+      }
     }
   }
 
@@ -124,7 +145,8 @@ function ProductDetail({ dispatch, match }) {
                           setCodeState("error");
                         }
                         setCode(event.target.value)
-                      }
+                      },
+                      value: code
                     }}
                   />
                 </GridItem>
@@ -147,7 +169,8 @@ function ProductDetail({ dispatch, match }) {
                           seturlState("error");
                         }
                         seturl(event.target.value)
-                      }
+                      },
+                      value: url
                     }}
                   />
                 </GridItem>
@@ -161,7 +184,8 @@ function ProductDetail({ dispatch, match }) {
                       fullWidth: true
                     }}
                     inputProps={{
-                      onChange: (event) => setCost(event.target.value)
+                      onChange: (event) => setCost(event.target.value),
+                      value: cost
                     }}
                   />
                 </GridItem>
@@ -173,7 +197,8 @@ function ProductDetail({ dispatch, match }) {
                       fullWidth: true
                     }}
                     inputProps={{
-                      onChange: (event) => setProfit(event.target.value)
+                      onChange: (event) => setProfit(event.target.value),
+                      value: profit
                     }}
                   />
                 </GridItem>
@@ -236,9 +261,9 @@ function ProductDetail({ dispatch, match }) {
 }
 
 const mapStateToProps = ({ product }) => {
-  const { isFetching } = product;
+  const { currentProduct } = product;
   return {
-    isFetching: isFetching,
+    currentProduct: currentProduct,
   }
 }
 

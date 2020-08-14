@@ -61,7 +61,8 @@ class Database(object):
 
         updated = self.db[collection_name].update_one(criteria, set_obj)
         if updated.matched_count == 1:
-            return 'Record Successfully Updated'
+            return True
+        return False
 
     def delete(self, id, collection_name):
         deleted = self.db[collection_name].delete_one({'_id': ObjectId(id)})
