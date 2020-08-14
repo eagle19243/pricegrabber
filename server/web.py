@@ -13,7 +13,7 @@ from .scheduler import Scheduler
 
 config = load_config()
 
-APP = Flask(__name__, static_folder='../build')
+APP = Flask(__name__, static_folder='../build', static_url_path='/')
 APP.config['JWT_SECRET_KEY'] = config['SECRET_KEY']
 APP.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 APP.config.from_mapping(
