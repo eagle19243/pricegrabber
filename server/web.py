@@ -19,7 +19,6 @@ APP.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 APP.config.from_mapping(
     SECRET_KEY=config['SECRET_KEY'],
 )
-APP.config.update(CELERYD_HIJACK_ROOT_LOGGER=False)
 APP.config.update(config)
 flask_bcrypt = Bcrypt(APP)
 jwt = JWTManager(APP)
