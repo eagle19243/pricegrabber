@@ -3,7 +3,8 @@ import API from "api/API";
 import { startLoading, stopLoading } from "actions/AppActions"
 import {
   PRODUCT_ADD_REQUEST, PRODUCT_ADD_SUCCESS, PRODUCT_GET_REQUEST, PRODUCT_GET_SUCCESS,
-  PRODUCT_REMOVE_REQUEST, PRODUCT_REMOVE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS
+  PRODUCT_REMOVE_REQUEST, PRODUCT_REMOVE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS,
+  GET_PRODUCT_COUNT
 } from "types";
 
 export function addProduct(product) {
@@ -72,6 +73,21 @@ export function updateProduct(productId, product) {
 
     API.updateProduct(productId, product).then(response => {
       dispatch(stopLoading());
+    }).catch(error => {
+      console.log(error.message);
+    });
+  }
+}
+
+export function getProductCount() {
+  return (dispatch) => {
+    API.getProductCount().then(response => {
+      dispatch({
+        type: GET_PRODUCT_COUNT,
+        payload: {
+          productCount: response.data.data
+        }
+      });
     }).catch(error => {
       console.log(error.message);
     });

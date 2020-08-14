@@ -47,8 +47,12 @@ const updateProduct = (productId, product) => {
   });
 }
 
+const getProductCount = () => {
+  return api.post('product/get_count');
+}
+
 const getConfig = () => {
-  return api.post('product/get');
+  return api.post('configuration/get');
 }
 
 const updateConfig = (config) => {
@@ -62,6 +66,7 @@ export default {
   getProduct,
   removeProduct,
   updateProduct,
+  getProductCount,
   getConfig,
   updateConfig
 }

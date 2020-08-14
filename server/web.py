@@ -9,6 +9,7 @@ from .models.user import User
 from .models.product import Product
 from .models.configuration import Configuration
 from .util import load_config, JSONEncoder
+from .scheduler import Scheduler
 
 config = load_config()
 
@@ -27,9 +28,11 @@ APP.json_encoder = JSONEncoder
 user_model = User()
 product_model = Product()
 configuration_model = Configuration()
+scheduler = Scheduler()
 
 
 def get_app():
+    scheduler.run()
     return APP
 
 
@@ -44,7 +47,6 @@ def unauthorized_response(callback):
 @APP.route('/', defaults={'path': ''})
 @APP.route('/<path:path>')
 def index(path=None):
-    print('index')
     return send_from_directory(APP.static_folder, 'index.html')
 
 
@@ -132,6 +134,17 @@ def get_product():
     })
 
 
+@APP.route('/product/get_count', methods=['POST'])
+@jwt_required
+def get_product_count():
+    data = product_model.find({})
+
+    return jsonify({
+        'success': True,
+        'data': len(data)
+    })
+
+
 @APP.route('/product/remove', methods=['POST'])
 @jwt_required
 def remove_product():
@@ -139,6 +152,30 @@ def remove_product():
     success = product_model.delete(data['productId'])
     return jsonify({
         'success': success
+    })
+
+
+@APP.route('/configuration/get', methods=['POST'])
+@jwt_required
+def get_configuration():
+    configuration = configuration_model.find_one()
+
+    return jsonify({
+        'success': True,
+        'data': configuration
+    })
+
+
+@APP.route('/configuration/update', methods=['POST'])
+@jwt_required
+def update_configuration():
+    data = request.get_json()
+    configuration = configuration_model.find_one()
+    success = configuration_model.update(configuration['_id'], data)
+
+    return jsonify({
+        'success': True,
+        'data': success
     })
 
 

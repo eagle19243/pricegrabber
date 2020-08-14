@@ -1,9 +1,11 @@
 import {
   PRODUCT_ADD_REQUEST, PRODUCT_ADD_SUCCESS, PRODUCT_GET_REQUEST, PRODUCT_GET_SUCCESS,
-  PRODUCT_REMOVE_REQUEST, PRODUCT_REMOVE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS
+  PRODUCT_REMOVE_REQUEST, PRODUCT_REMOVE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS,
+  GET_PRODUCT_COUNT
 } from "types";
 
 const INITIAL_STATE = {
+  productCount: 0,
   tableData: [],
   currentProduct: null,
 };
@@ -27,6 +29,11 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         tableData: tableData
       };
+    case GET_PRODUCT_COUNT:
+      return {
+        ...state,
+        productCount: payload.productCount
+      }
     default:
       return state;
   }

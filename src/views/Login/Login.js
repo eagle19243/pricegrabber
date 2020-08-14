@@ -157,12 +157,6 @@ function Login({ dispatch }) {
 }
 
 const mapStateToProps = ({ auth }) => {
-  const { isFetching, isAuthenticated, errorMessage } = auth;
-  return {
-    isFetching: isFetching,
-    isAuthenticated, isAuthenticated,
-    errorMessage: errorMessage,
-  }
 }
 
 export default withRouter(connect(mapStateToProps)(Login));

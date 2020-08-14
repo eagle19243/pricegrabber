@@ -14,8 +14,8 @@ class Configuration(object):
             'last_run_time': 'datetime'
         }
 
-        self.create_required_fields = ['interval', 'last_run_time']
-        self.create_optional_fields = []
+        self.create_required_fields = []
+        self.create_optional_fields = ['interval', 'last_run_time']
         self.update_required_fields = []
         self.update_optional_fields = ['interval', 'last_run_time']
 
@@ -27,6 +27,9 @@ class Configuration(object):
 
     def find(self, config):  # find all
         return self.db.find(config, self.collection_name)
+
+    def find_one(self):
+        return self.db.find_one({}, self.collection_name)
 
     def find_by_id(self, id):
         return self.db.find_by_id(id, self.collection_name)

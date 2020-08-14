@@ -1,6 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import moment from "moment";
+import ChartistGraph from "react-chartist";
+import Chartist from "chartist";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
@@ -15,6 +18,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CardIcon from "components/Card/CardIcon.js";
+import Table from "components/Table/Table.js";
 
 import { addProduct, updateProduct, getProduct } from "actions/ProductActions";
 
@@ -64,6 +68,13 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   const [urlState, seturlState] = React.useState("");
   const [cost, setCost] = React.useState("");
   const [profit, setProfit] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [lastTimeUpdated, setLastTimeUpdated] = React.useState(null)
+  const [reviewCount, setReviewCount] = React.useState(0);
+  const [reviewRating, setReviewRating] = React.useState(0);
+  const [tableHead, setTableHead] = React.useState([]);
+  const [tableData, setTableData] = React.useState([]);
+  const [chartData, setChartData] = React.useState(null)
 
   React.useEffect(() => {
     dispatch(getProduct(productId));
@@ -74,6 +85,40 @@ function ProductDetail({ dispatch, match, currentProduct }) {
       seturl(currentProduct.url);
       setCost(currentProduct.cost);
       setProfit(currentProduct.profit);
+      setName(currentProduct.name);
+      setLastTimeUpdated(currentProduct.updated);
+      setReviewCount(currentProduct.review_count);
+      setReviewRating(currentProduct.review_rating);
+      
+      if (currentProduct.competitors) {
+        const rowData = [];
+        const columnData = ['Shop'];
+        const competitors = Object.keys(currentProduct.competitors);
+        console.log(currentProduct);
+        for (const competitor of competitors) {
+          const data = [competitor];
+          for (const date in currentProduct.competitors[competitor]) {
+            data.push(currentProduct.competitors[competitor][date]);
+          }
+          rowData.push(data);
+        }
+
+        setTableData(rowData);
+        setTableHead(columnData.concat(Object.keys(currentProduct.competitors[competitors[0]])));
+      }
+
+      if (currentProduct.price) {
+        const dates = Object.keys(currentProduct.price);
+        const series = [[]];
+        for (const date of dates) {
+          series[0].push(currentProduct.price[date]);
+        }
+
+        setChartData({
+          labels: dates,
+          series: series
+        });
+      }
     }
   }, [currentProduct]);
 
@@ -221,7 +266,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       </CardIcon>
                       <p className={classes.cardCategory}>Product Name</p>
                       <h4 className={classes.cardTitle}>
-                        Sumsung
+                        {name}
                       </h4>
                     </CardHeader>
                   </Card>
@@ -233,7 +278,9 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                         <Icon>access_time</Icon>
                       </CardIcon>
                       <p className={classes.cardCategory}>Last Time Updated</p>
-                      <h4 className={classes.cardTitle}>08/05/2020 03:36 PM</h4>
+                      <h4 className={classes.cardTitle}>
+                        {lastTimeUpdated ? moment(lastTimeUpdated).format('MM/DD/YYYY HH:mm:ss') : ""}
+                      </h4>
                     </CardHeader>
                   </Card>
                 </GridItem>
@@ -244,15 +291,87 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                         <Icon>access_time</Icon>
                       </CardIcon>
                       <p className={classes.cardCategory}>Reviews</p>
-                      <h4 className={classes.cardTitle}>12</h4>
+                      <h4 className={classes.cardTitle}>{reviewCount}</h4>
                     </CardHeader>
                     <CardFooter className={classes.cardFooter}>
-                      <Rating name="rating" value={4} size="large" readOnly/>
+                      <Rating name="rating" value={reviewRating} size="large" readOnly/>
                     </CardFooter>
                   </Card>
                 </GridItem>
               </GridContainer>
             </CardBody>
+          </Card>
+        </GridItem>
+        <GridItem xs={12}>
+          <Card>
+            <CardBody>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={6} lg={4}>
+                  <Table
+                    tableHeaderColor="primary"
+                    tableHead={tableHead}
+                    tableData={tableData}
+                  />
+                </GridItem>
+              </GridContainer>
+            </CardBody>
+          </Card>
+        </GridItem>
+        <GridItem xs={12}>
+          <Card chart>
+            <CardHeader color="success">
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={6} lg={4}>
+                  <ChartistGraph
+                    className="ct-chart"
+                    data={chartData}
+                    type="Line"
+                    options={{
+                      lineSmooth: Chartist.Interpolation.cardinal({
+                        tension: 0
+                      }),
+                      low: 0,
+                      high: 500, 
+                      chartPadding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                      }
+                    }}
+                    listener={{
+                      draw: function(data) {
+                        if (data.type === "line" || data.type === "area") {
+                          data.element.animate({
+                            d: {
+                              begin: 600,
+                              dur: 700,
+                              from: data.path
+                                .clone()
+                                .scale(1, 0)
+                                .translate(0, data.chartRect.height())
+                                .stringify(),
+                              to: data.path.clone().stringify(),
+                              easing: Chartist.Svg.Easing.easeOutQuint
+                            }
+                          });
+                        } else if (data.type === "point") {
+                          data.element.animate({
+                            opacity: {
+                              begin: (data.index + 1) * 80,
+                              dur: 500,
+                              from: 0,
+                              to: 1,
+                              easing: "ease"
+                            }
+                          });
+                        }
+                      }
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+            </CardHeader>
           </Card>
         </GridItem>
       </GridContainer>

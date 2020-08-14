@@ -13,6 +13,8 @@ class Validator(object):
             return type(element) == float
         if desired_type == 'array':
             return type(element) == list
+        if desired_type == 'object':
+            return type(element) == dict
         if type(desired_type) == list:
             return element in desired_type
 
