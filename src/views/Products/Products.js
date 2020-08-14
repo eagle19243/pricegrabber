@@ -19,10 +19,10 @@ function Products({dispatch, tableData}) {
   }, []);
 
   const tableColumns = [
-    {title: "Code", field: "code"},
-    {title: "URL", field: "url"},
-    {title: 'Cost', field: 'cost'},
-    {title: 'Profit', field: 'profit'}
+    {title: 'Code', field: 'code', width: 20},
+    {title: 'URL', field: 'url'},
+    {title: 'Cost', field: 'cost', width: 10},
+    {title: 'Profit', field: 'profit', width: 10}
   ];
 
   const onAddProduct = (event) => {
