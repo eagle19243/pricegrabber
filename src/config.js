@@ -1,6 +1,8 @@
+const apiURL = process.env.NODE_ENV === "development" ? 
+                'http://127.0.0.1:5000/' :
+                'http://127.0.0.1:8093/'
 const Config = {
-  // api_url: 'http://116.203.78.255:8093/'
-  api_url: 'http://127.0.0.1:8093/'
+  apiURL: apiURL
 };
 
 export default Config;

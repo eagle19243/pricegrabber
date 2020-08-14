@@ -1,7 +1,7 @@
 import apisauce from "apisauce";
 import config from "config";
 
-const baseURL = config.api_url;
+const baseURL = config.apiURL;
 const api = apisauce.create({
   baseURL,
   headers: {},
