@@ -12,7 +12,7 @@ class Product(object):
         self.fields = {
             'name': 'string',
             'code': 'string',
-            'url': 'string',
+            'url': 'url',
             'cost': 'float',
             'profit': 'float',
             'price': 'array',

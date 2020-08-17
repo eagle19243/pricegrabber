@@ -1,5 +1,6 @@
 """Flask web app to handle back-end requests of the React web UI.
 """
+import os
 import datetime
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
@@ -13,7 +14,7 @@ from .scheduler import Scheduler
 
 config = load_config()
 
-APP = Flask(__name__, static_folder='../build', static_url_path='/')
+APP = Flask(__name__, static_folder='../build')
 APP.config['JWT_SECRET_KEY'] = config['SECRET_KEY']
 APP.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 APP.config.from_mapping(
@@ -46,7 +47,10 @@ def unauthorized_response(callback):
 @APP.route('/', defaults={'path': ''})
 @APP.route('/<path:path>')
 def index(path):
-    print(path)
+    # build_dir = os.path.abspath('../build')
+    # if path != "" and os.path.exists(os.path.join(build_dir, path)):
+    #     return send_from_directory(os.path.join(build_dir), path)
+    # else:
     return send_from_directory(APP.static_folder, 'index.html')
 
 

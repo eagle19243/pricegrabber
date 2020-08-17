@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 
@@ -15,6 +16,9 @@ class Validator(object):
             return type(element) == list
         if desired_type == 'object':
             return type(element) == dict
+        if desired_type == 'url':
+            regex = r'https:\/\/www.skroutz.gr\/.*'
+            return re.match(regex, element) is not None
         if type(desired_type) == list:
             return element in desired_type
 
