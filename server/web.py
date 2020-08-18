@@ -47,11 +47,10 @@ def unauthorized_response(callback):
 @APP.route('/', defaults={'path': ''})
 @APP.route('/<path:path>')
 def index(path):
-    # build_dir = os.path.abspath('../build')
-    # if path != "" and os.path.exists(os.path.join(build_dir, path)):
-    #     return send_from_directory(os.path.join(build_dir), path)
-    # else:
-    return send_from_directory(APP.static_folder, 'index.html')
+    if path != "" and os.path.exists(os.path.join(APP.static_folder, path)):
+        return send_from_directory(APP.static_folder, path)
+    else:
+        return send_from_directory(APP.static_folder, 'index.html')
 
 
 @APP.route('/auth', methods=['POST'])
@@ -181,7 +180,3 @@ def update_configuration():
         'success': True,
         'data': success
     })
-
-
-
-
