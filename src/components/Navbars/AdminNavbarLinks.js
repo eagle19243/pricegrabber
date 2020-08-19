@@ -26,7 +26,7 @@ function AdminNavbarLinks({ dispatch }) {
   const classes = useStyles();
   const [openProfile, setOpenProfile] = React.useState(null);
 
-  const handleClickProfile = event => {
+  const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(null);
     } else {

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import { routerMiddleware, ConnectedRouter } from "connected-react-router";
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
@@ -19,15 +19,10 @@ const history = createBrowserHistory();
 
 export const store = createStore(
   createRootReducer(history),
-  compose(
-    applyMiddleware(
-      routerMiddleware(history),
-      ReduxThunk
-    ),
-  )
+  compose(applyMiddleware(routerMiddleware(history), ReduxThunk))
 );
 
-const dispatch = store.dispatch;
+const { dispatch } = store;
 dispatch(doInit());
 
 ReactDOM.render(

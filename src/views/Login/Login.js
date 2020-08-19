@@ -22,7 +22,6 @@ import CardFooter from "components/Card/CardFooter.js";
 
 import { login } from "actions/AuthActions";
 
-
 import styles from "assets/jss/material-dashboard-react/views/loginPageStyle.js";
 
 const useStyles = makeStyles(styles);
@@ -36,7 +35,7 @@ function Login({ dispatch }) {
   const [passwordState, setPasswordState] = React.useState("");
 
   React.useEffect(() => {
-    let id = setTimeout(function() {
+    const id = setTimeout(() => {
       setCardAnimation("");
     }, 700);
     // Specify how to clean up after this effect:
@@ -45,20 +44,20 @@ function Login({ dispatch }) {
     };
   });
 
-  const validateEmail = value => {
+  const validateEmail = (value) => {
     const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (emailRex.test(value)) {
       return true;
     }
     return false;
-  }
+  };
 
-  const validatePassword = value => {
+  const validatePassword = (value) => {
     if (value.length >= 1) {
       return true;
     }
     return false;
-  }
+  };
 
   const doLogin = (e) => {
     e.preventDefault();
@@ -66,7 +65,7 @@ function Login({ dispatch }) {
     if (emailState === "") {
       setEmailState("error");
     }
-    
+
     if (passwordState === "") {
       setPasswordState("error");
     }
@@ -74,7 +73,7 @@ function Login({ dispatch }) {
     if (emailState === "success" && passwordState === "success") {
       dispatch(login(email, password));
     }
-  }
+  };
 
   return (
     <div className={classes.container}>
@@ -95,7 +94,7 @@ function Login({ dispatch }) {
                   labelText="Email Address *"
                   id="email"
                   formControlProps={{
-                    fullWidth: true
+                    fullWidth: true,
                   }}
                   inputProps={{
                     endAdornment: (
@@ -111,7 +110,7 @@ function Login({ dispatch }) {
                       }
                       setEmail(event.target.value);
                     },
-                    type: "email"
+                    type: "email",
                   }}
                 />
                 <CustomInput
@@ -120,7 +119,7 @@ function Login({ dispatch }) {
                   labelText="Password *"
                   id="password"
                   formControlProps={{
-                    fullWidth: true
+                    fullWidth: true,
                   }}
                   inputProps={{
                     endAdornment: (
@@ -138,8 +137,8 @@ function Login({ dispatch }) {
                       } else {
                         setPasswordState("error");
                       }
-                      setPassword(event.target.value)
-                    }
+                      setPassword(event.target.value);
+                    },
                   }}
                 />
               </CardBody>
