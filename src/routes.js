@@ -1,5 +1,5 @@
 import React from "react";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
 import Settings from "@material-ui/icons/Settings";

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { push } from "connected-react-router";
 import API from "api/API";
+import { startLoading, stopLoading } from "actions/AppActions"
 import {
   AUTH_FAILURE, AUTH_INIT_SUCCESS, AUTH_INIT_ERROR, LOGIN_REQUEST,
   LOGIN_SUCCESS, LOGOUT_REQUEST, LOGOUT_SUCCESS
@@ -8,6 +9,7 @@ import {
 
 export function login(email, password) {
   return (dispatch) => {
+    dispatch(startLoading());
     dispatch({
       type: LOGIN_REQUEST,
     });
@@ -20,8 +22,10 @@ export function login(email, password) {
       const token = response.data.data;
       dispatch(receiveToken(token));
       dispatch(doInit());
+      dispatch(stopLoading());
       dispatch(push('/app'));
     }).catch(error => {
+      dispatch(stopLoading());
       dispatch(authError(error.message));
     });
   }
