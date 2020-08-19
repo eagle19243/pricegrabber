@@ -8,8 +8,6 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Navbar from "components/Navbars/Navbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import ProductDetail from "views/ProductDetail/ProductDetail";
@@ -45,7 +43,7 @@ const switchRoutes = (
 
 const useStyles = makeStyles(styles);
 
-function Admin({isFetching, ...rest }) {
+function Admin({...rest }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -110,18 +108,8 @@ function Admin({isFetching, ...rest }) {
           <div className={classes.map}>{switchRoutes}</div>
         )}
       </div>
-      <Backdrop className={classes.backdrop} open={isFetching}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </div>
   );
 }
 
-const mapStateToProps = ({ app }) => {
-  const { isFetching } = app;
-  return {
-    isFetching: isFetching
-  }
-}
-
-export default withRouter(connect(mapStateToProps)(Admin));
+export default withRouter(connect()(Admin));
