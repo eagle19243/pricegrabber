@@ -22,8 +22,7 @@ import styles from "assets/jss/material-dashboard-react/components/headerLinksSt
 
 const useStyles = makeStyles(styles);
 
-function AdminNavbarLinks(props) {
-  const { dispatch } = props;
+function AdminNavbarLinks({ dispatch }) {
   const classes = useStyles();
   const [openProfile, setOpenProfile] = React.useState(null);
 
@@ -100,7 +99,4 @@ function AdminNavbarLinks(props) {
   );
 }
 
-const mapStateToProps = ({ auth }) => {
-}
-
-export default withRouter(connect(mapStateToProps)(AdminNavbarLinks));
+export default withRouter(connect()(AdminNavbarLinks));

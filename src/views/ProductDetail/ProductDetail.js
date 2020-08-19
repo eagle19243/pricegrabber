@@ -74,7 +74,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   const [reviewRating, setReviewRating] = React.useState(0);
   const [tableHead, setTableHead] = React.useState([]);
   const [tableData, setTableData] = React.useState([]);
-  const [chartData, setChartData] = React.useState(null)
+  const [chartData, setChartData] = React.useState({})
 
   React.useEffect(() => {
     dispatch(getProduct(productId));
@@ -89,12 +89,12 @@ function ProductDetail({ dispatch, match, currentProduct }) {
       setLastTimeUpdated(currentProduct.updated);
       setReviewCount(currentProduct.review_count);
       setReviewRating(currentProduct.review_rating);
-      
-      if (currentProduct.competitors) {
+      console.log(currentProduct);
+      if (currentProduct.competitors && Object.keys(currentProduct.competitors).length > 0) {
         const rowData = [];
         const columnData = ['Shop'];
         const competitors = Object.keys(currentProduct.competitors);
-        console.log(currentProduct);
+        
         for (const competitor of competitors) {
           const data = [competitor];
           for (const date in currentProduct.competitors[competitor]) {

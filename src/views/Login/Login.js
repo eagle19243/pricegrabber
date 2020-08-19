@@ -156,7 +156,4 @@ function Login({ dispatch }) {
   );
 }
 
-const mapStateToProps = ({ auth }) => {
-}
-
-export default withRouter(connect(mapStateToProps)(Login));
+export default withRouter(connect()(Login));
