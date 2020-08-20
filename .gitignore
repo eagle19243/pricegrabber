@@ -118,6 +118,3 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
-
-
-server/scraper\.py
