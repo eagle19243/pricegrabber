@@ -306,6 +306,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
             </CardFooter>
           </Card>
         </GridItem>
+        { currentProduct && currentProduct.name && currentProduct.updated && currentProduct.review_rating &&
         <GridItem xs={12}>
           <Card>
             <CardBody>
@@ -354,6 +355,8 @@ function ProductDetail({ dispatch, match, currentProduct }) {
             </CardBody>
           </Card>
         </GridItem>
+        }
+        { currentProduct && currentProduct.competitors && Object.keys(currentProduct.competitors).length > 0 &&
         <GridItem xs={12}>
           <Card>
             <CardBody>
@@ -369,6 +372,8 @@ function ProductDetail({ dispatch, match, currentProduct }) {
             </CardBody>
           </Card>
         </GridItem>
+        }
+        { currentProduct && currentProduct.price &&
         <GridItem xs={12}>
           <Card chart>
             <CardHeader color="success">
@@ -426,6 +431,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
             </CardHeader>
           </Card>
         </GridItem>
+        }
       </GridContainer>
     </div>
   );
