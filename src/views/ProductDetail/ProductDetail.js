@@ -80,7 +80,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
     dispatch(getProduct(productId));
   }, []);  
   React.useEffect(() => {
-    if (currentProduct) {
+    if (currentProduct && window.location.pathname !== '/app/products/new') {
       setCode(currentProduct.code);
       seturl(currentProduct.url);
       setCost(currentProduct.cost);
