@@ -334,7 +334,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       </CardIcon>
                       <p className={classes.cardCategory}>Last Time Updated</p>
                       <h4 className={classes.cardTitle}>
-                        {lastTimeUpdated ? moment(lastTimeUpdated).format('MM/DD/YYYY HH:mm:ss') : ""}
+                        {lastTimeUpdated ? moment(lastTimeUpdated).local().format('MM/DD/YYYY HH:mm:ss') : ""}
                       </h4>
                     </CardHeader>
                   </Card>
