@@ -54,7 +54,7 @@ const styles = {
   },
   cardFooter: {
     justifyContent: "flex-end"
-  }
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -249,18 +249,19 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                         }
                         seturl(event.target.value)
                       },
-                      value: url
+                      value: url,
                     }}
                   />
                 </GridItem>
               </GridContainer>
               <GridContainer>
-                <GridItem xs={12} sm={3}>
+                <GridItem xs={12} sm={3} md={2}>
                   <CustomInput
                     success={costState === "success"}
                     error={costState === "error"}
                     labelText="Cost"
                     id="cost"
+                    align="right"
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -273,16 +274,17 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                         }
                         setCost(event.target.value)
                       },
-                      value: cost
+                      value: cost,
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={3}>
+                <GridItem xs={12} sm={3} md={2}>
                   <CustomInput
                     success={profitState === "success"}
                     error={profitState === "error"}
                     labelText="Profit"
                     id="profit"
+                    align="right"
                     formControlProps={{
                       fullWidth: true
                     }}

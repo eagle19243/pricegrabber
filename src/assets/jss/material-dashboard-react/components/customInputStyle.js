@@ -89,6 +89,15 @@ const customInputStyle = {
       color: whiteColor,
       opacity: "1"
     }
+  },
+  right: {
+    textAlign: "right"
+  },
+  left: {
+    textAlign: "left"
+  },
+  center: {
+    textAlign: "center"
   }
 };
 

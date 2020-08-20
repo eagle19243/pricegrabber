@@ -26,7 +26,8 @@ export default function CustomInput(props) {
     white,
     inputRootCustomClasses,
     success,
-    helperText
+    helperText,
+    align,
   } = props;
 
   const labelClasses = classNames({
@@ -44,7 +45,8 @@ export default function CustomInput(props) {
   });
   const inputClasses = classNames({
     [classes.input]: true,
-    [classes.whiteInput]: white
+    [classes.whiteInput]: white,
+    [classes[align]]: align
   });
   var formControlClasses;
   if (formControlProps !== undefined) {
