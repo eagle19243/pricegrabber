@@ -67,7 +67,9 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   const [url, seturl] = React.useState("");
   const [urlState, seturlState] = React.useState("");
   const [cost, setCost] = React.useState("");
+  const [costState, setCostState] = React.useState("");
   const [profit, setProfit] = React.useState("");
+  const [profitState, setProfitState] = React.useState("");
   const [name, setName] = React.useState("");
   const [lastTimeUpdated, setLastTimeUpdated] = React.useState(null)
   const [reviewCount, setReviewCount] = React.useState(0);
@@ -123,12 +125,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   }, [currentProduct]);
 
   const validateURL = value => {
-    try {
-      new URL(value);
-      return true;
-    } catch (_) {
-      return false;
-    }
+    return /https:\/\/www.skroutz.gr\/s\/.*/g.test(value);
   }
 
   const validateRequired = value => {
@@ -136,6 +133,10 @@ function ProductDetail({ dispatch, match, currentProduct }) {
       return true;
     }
     return false;
+  }
+
+  const validateFloat = value => {
+    return /^-?\d*(\.\d+)?$/g.test(value);
   }
 
   const doSave = () => {
@@ -223,26 +224,44 @@ function ProductDetail({ dispatch, match, currentProduct }) {
               <GridContainer>
                 <GridItem xs={12} sm={3}>
                   <CustomInput
+                    success={costState === "success"}
+                    error={costState === "error"}
                     labelText="Cost"
                     id="cost"
                     formControlProps={{
                       fullWidth: true
                     }}
                     inputProps={{
-                      onChange: (event) => setCost(event.target.value),
+                      onChange: (event) => {
+                        if (validateFloat(event.target.value)) {
+                          setCostState("success");
+                        } else {
+                          setCostState("error");
+                        }
+                        setCost(event.target.value)
+                      },
                       value: cost
                     }}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={3}>
                   <CustomInput
+                    success={profitState === "success"}
+                    error={profitState === "error"}
                     labelText="Profit"
                     id="profit"
                     formControlProps={{
                       fullWidth: true
                     }}
                     inputProps={{
-                      onChange: (event) => setProfit(event.target.value),
+                      onChange: (event) => {
+                        if (validateFloat(event.target.value)) {
+                          setProfitState("success");
+                        } else {
+                          setProfitState("error");
+                        }
+                        setProfit(event.target.value)
+                      },
                       value: profit
                     }}
                   />
