@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { push } from "connected-react-router";
 import API from "api/API";
-import { startLoading, stopLoading } from "actions/AppActions"
+import { startLoading, stopLoading, showAlert } from "actions/AppActions"
 import {
   AUTH_FAILURE, AUTH_INIT_SUCCESS, AUTH_INIT_ERROR, LOGIN_REQUEST,
   LOGIN_SUCCESS, LOGOUT_REQUEST, LOGOUT_SUCCESS
@@ -15,18 +15,23 @@ export function login(email, password) {
     });
   
     if (email.length === 0 || password.length === 0) {
-      dispatch(authError('Email or Password cannot be empty'));
+      dispatch(showAlert('Email or Password cannot be empty', 'error'));
     }
-  
+    
     API.login(email, password).then(response => {
-      const token = response.data.data;
-      dispatch(receiveToken(token));
-      dispatch(doInit());
+      response = response.data;
       dispatch(stopLoading());
-      dispatch(push('/app'));
+
+      if (response.success) {
+        dispatch(receiveToken(response.data));
+        dispatch(doInit());
+        dispatch(push('/app'));
+      } else {
+        dispatch(showAlert(response.message, 'error'));
+      }
     }).catch(error => {
       dispatch(stopLoading());
-      dispatch(authError(error.message));
+      dispatch(showAlert(error.message, 'error'));
     });
   }
 }
@@ -56,13 +61,6 @@ export function isAuthenticated() {
   if (!data) return;
 
   return date < data.exp;
-}
-
-export function authError(payload) {
-  return {
-    type: AUTH_FAILURE,
-    payload
-  }
 }
 
 export function receiveToken(token) {
