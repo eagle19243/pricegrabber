@@ -105,7 +105,8 @@ def add_product():
     product_id = product_model.create(data)
     return jsonify({
         'success': True,
-        'data': product_id
+        'data': product_id,
+        'message': 'Product added successfully'
     })
 
 
@@ -116,8 +117,10 @@ def update_product():
     product_id = data['productId']
     product = data['product']
     success = product_model.update(product_id, product)
+    message = 'Update successful' if success else 'Update failed'
     return jsonify({
-        'success': success
+        'success': success,
+        'message': message
     })
 
 
@@ -153,8 +156,10 @@ def get_product_count():
 def remove_product():
     data = request.get_json()
     success = product_model.delete(data['productId'])
+    message = 'Remove successful' if success else 'Remove failed'
     return jsonify({
-        'success': success
+        'success': success,
+        'message': message
     })
 
 
@@ -175,8 +180,8 @@ def update_configuration():
     data = request.get_json()
     configuration = configuration_model.find_one()
     success = configuration_model.update(configuration['_id'], data)
-
+    message = 'Update successful' if success else 'Update failed'
     return jsonify({
-        'success': True,
-        'data': success
+        'success': success,
+        'message': message
     })

@@ -1,10 +1,8 @@
 import { push } from "connected-react-router";
 import API from "api/API";
-import { startLoading, stopLoading } from "actions/AppActions"
+import { startLoading, stopLoading, showAlert } from "actions/AppActions"
 import {
-  PRODUCT_ADD_REQUEST, PRODUCT_ADD_SUCCESS, PRODUCT_GET_REQUEST, PRODUCT_GET_SUCCESS,
-  PRODUCT_REMOVE_REQUEST, PRODUCT_REMOVE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS,
-  GET_PRODUCT_COUNT
+  PRODUCT_GET_SUCCESS,PRODUCT_REMOVE_SUCCESS, GET_PRODUCT_COUNT,
 } from "types";
 
 export function addProduct(product) {
@@ -13,7 +11,13 @@ export function addProduct(product) {
 
     API.addProduct(product).then(response => {
       dispatch(stopLoading());
-      dispatch(push('/app/products'));
+
+      if (response.problem) {
+        dispatch(showAlert(response.problem, 'error'));
+      } else {
+        dispatch(showAlert(response.data.message, 'success'));
+        dispatch(push('/app/products'));
+      }
     }).catch(error => {
       console.log(error.message);
     });
@@ -52,7 +56,13 @@ export function removeProduct(productId) {
     dispatch(startLoading());
 
     API.removeProduct(productId).then(response => {
-      if (response.data.success) {
+      dispatch(stopLoading());
+
+      if (response.data && !response.data.success) {
+        dispatch(showAlert(response.data.message, 'error'));
+      } else if (response.problem) {
+        dispatch(showAlert(response.problem, 'error'));
+      } else {
         dispatch({
           type: PRODUCT_REMOVE_SUCCESS,
           payload: {
@@ -60,7 +70,6 @@ export function removeProduct(productId) {
           }
         });
       }
-      dispatch(stopLoading());
     }).catch(error => {
       console.log(error.message);
     });
@@ -73,6 +82,14 @@ export function updateProduct(productId, product) {
 
     API.updateProduct(productId, product).then(response => {
       dispatch(stopLoading());
+
+      if (response.data && !response.data.success) {
+        dispatch(showAlert(response.data.message, 'error'));
+      } else if (response.problem) {
+        dispatch(showAlert(response.problem, 'error'));
+      } else {
+        dispatch(showAlert(response.data.message, 'success'));
+      }
     }).catch(error => {
       console.log(error.message);
     });

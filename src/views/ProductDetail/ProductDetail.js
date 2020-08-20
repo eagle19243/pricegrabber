@@ -87,6 +87,31 @@ function ProductDetail({ dispatch, match, currentProduct }) {
       seturl(currentProduct.url);
       setCost(currentProduct.cost);
       setProfit(currentProduct.profit);
+
+      if (validateRequired(currentProduct.code)) {
+        setCodeState("success");
+      } else {
+        setCodeState("error");
+      }
+
+      if (validateURL(currentProduct.url)) {
+        seturlState("success");
+      } else {
+        seturlState("error");
+      }
+
+      if (validateFloat(currentProduct.cost)) {
+        setCostState("success");
+      } else {
+        setCostState("error");
+      }
+
+      if (validateFloat(currentProduct.profit)) {
+        setProfitState("success");
+      } else {
+        setProfitState("error");
+      }
+
       setName(currentProduct.name);
       setLastTimeUpdated(currentProduct.updated);
       setReviewCount(currentProduct.review_count);
@@ -148,7 +173,15 @@ function ProductDetail({ dispatch, match, currentProduct }) {
       seturlState("error");
     }
 
-    if (codeState === "success" && urlState === "success") {
+    if (costState === "") {
+      setCostState("error");
+    }
+
+    if (profitState === "") {
+      setProfitState("error");
+    }
+
+    if (codeState === "success" && urlState === "success" && costState === "success" && profitState === "success") {
       if (productId) {
         dispatch(updateProduct(productId, {
           code: code,
