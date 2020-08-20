@@ -14,7 +14,7 @@ class Scraper:
     """
 
     def __init__(self):
-        self.pool = ThreadPoolExecutor(max_workers=8)
+        self.pool = ThreadPoolExecutor(max_workers=4)
         self.product_model = Product()
         self.configuration_model = Configuration()
         self.logger = logging.getLogger('pricegrabber.scraper')
@@ -134,6 +134,9 @@ class Scraper:
             return None
         except ValueError:
             self.logger.error('Invalid URL %s', url)
+            return None
+        except ConnectionError:
+            self.logger.error('Connection error %s', url)
             return None
 
 
