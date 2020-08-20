@@ -63,6 +63,7 @@ export function removeProduct(productId) {
       } else if (response.problem) {
         dispatch(showAlert(response.problem, 'error'));
       } else {
+        dispatch(showAlert(response.data.message, 'success'));
         dispatch({
           type: PRODUCT_REMOVE_SUCCESS,
           payload: {
