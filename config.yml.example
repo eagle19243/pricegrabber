@@ -1,0 +1,32 @@
+DB:
+  url: mongodb://127.0.0.1:27017/
+  name: pricegrabber
+  user: ""
+  password: ""
+
+LOGGING:
+  version: 1
+  disable_existing_loggers: false
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: default
+    scraper:
+      class: logging.FileHandler
+      formatter: default
+      filename: /tmp/pricegrabber.log
+  formatters:
+    default:
+      format: "%(asctime)s %(levelname)s %(thread)d %(name)s %(message)s"
+      datefmt: "%Y-%m-%d %H:%M:%S"
+  root:
+    level: WARN
+  loggers:
+    pricegrabber.scraper:
+      handlers: [scraper]
+      level: INFO
+    pricegrabber.web:
+      handlers: [console]
+      level: INFO
+
+SECRET_KEY: pricegrabber
