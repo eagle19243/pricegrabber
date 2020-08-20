@@ -19,15 +19,16 @@ export function login(email, password) {
     }
     
     API.login(email, password).then(response => {
-      response = response.data;
       dispatch(stopLoading());
-
-      if (response.success) {
-        dispatch(receiveToken(response.data));
+      
+      if (response.data && !response.data.success) {
+        dispatch(showAlert(response.data.message, 'error'));
+      } else if (response.problem) {
+        dispatch(showAlert(response.problem, 'error'));
+      } else {
+        dispatch(receiveToken(response.data.data));
         dispatch(doInit());
         dispatch(push('/app'));
-      } else {
-        dispatch(showAlert(response.message, 'error'));
       }
     }).catch(error => {
       dispatch(stopLoading());
