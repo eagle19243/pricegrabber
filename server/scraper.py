@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, date
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from lxml import html
+from lxml.etree import ParserError
 from .models.product import Product
 from .models.configuration import Configuration
 
@@ -41,6 +42,7 @@ class Scraper:
         self.session.head('http://www.skroutz.gr')
 
     def run(self):
+        print('scraping started')
         self.logger.info('scraping started')
 
         config = self.configuration_model.find_one()
@@ -127,16 +129,25 @@ class Scraper:
                 'competitors': competitors
             }
         except KeyError:
+            print('KeyError in fetching product %s', url)
             self.logger.error('KeyError in fetching product %s', url)
             return None
         except IndexError:
+            print('Detail does not exist %s', url)
+            print('Response status code', response.status_code)
             self.logger.error('Detail does not exist %s', url)
             return None
         except ValueError:
+            print('Invalid URL %s', url)
             self.logger.error('Invalid URL %s', url)
             return None
         except ConnectionError:
+            print('Connection error %s', url)
             self.logger.error('Connection error %s', url)
+            return None
+        except ParserError:
+            print('Parser error %s', url)
+            self.logger.error('Parser error %s', url)
             return None
 
 
