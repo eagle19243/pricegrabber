@@ -15,9 +15,9 @@ class Product(object):
             'url': 'url',
             'cost': 'float',
             'profit': 'float',
-            'price': 'array',
+            'price': 'object',
             'review_count': 'int',
-            'review_rating': 'float',
+            'review_rating': 'int/float',
             'competitors': 'object'
         }
 

@@ -150,7 +150,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   }, [currentProduct]);
 
   const validateURL = value => {
-    return /https:\/\/www.skroutz.gr\/s\/.*/g.test(value);
+    return /https:\/\/www.skroutz.gr\/.*\.html/g.test(value);
   }
 
   const validateRequired = value => {

@@ -12,12 +12,15 @@ class Validator(object):
             return isinstance(element, datetime)
         if desired_type == 'float':
             return type(element) == float
+        if desired_type == 'int/float':
+            regex = r'^-?\d*(\.\d+)?$'
+            return re.match(regex, str(element)) is not None
         if desired_type == 'array':
             return type(element) == list
         if desired_type == 'object':
             return type(element) == dict
         if desired_type == 'url':
-            regex = r'https:\/\/www.skroutz.gr\/.*'
+            regex = r'https:\/\/www.skroutz.gr\/.*\.html'
             return re.match(regex, element) is not None
         if type(desired_type) == list:
             return element in desired_type
