@@ -118,3 +118,6 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
+*.bak
+*.dat
+*.dir

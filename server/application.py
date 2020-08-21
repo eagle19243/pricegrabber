@@ -13,3 +13,4 @@ if logging_conf:
     logging.config.dictConfig(logging_conf)
 
 APP = get_app()
+

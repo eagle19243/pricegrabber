@@ -5,12 +5,11 @@ import datetime
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask import Flask, request, jsonify, send_from_directory
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from .models.user import User
 from .models.product import Product
 from .models.configuration import Configuration
 from .util import load_config, JSONEncoder
-from .scheduler import Scheduler
 
 config = load_config()
 
@@ -28,11 +27,9 @@ APP.json_encoder = JSONEncoder
 user_model = User()
 product_model = Product()
 configuration_model = Configuration()
-scheduler = Scheduler()
 
 
 def get_app():
-    scheduler.run()
     return APP
 
 

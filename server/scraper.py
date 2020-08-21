@@ -2,7 +2,6 @@ import re
 import requests
 import json
 import base64
-import logging
 import time
 from datetime import datetime, date
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -12,14 +11,15 @@ from urllib3.exceptions import ProtocolError
 from selenium import webdriver
 from selenium.common.exceptions import JavascriptException
 from pyvirtualdisplay import Display
+from celery import Task
+from celery.utils.log import get_task_logger
 from .models.product import Product
 from .models.configuration import Configuration
 
 
-class Scraper:
+class Scraper(Task):
     """Product Scraper class
     """
-
     data_sitekey = '6Lf9EoAUAAAAAAChZdbR6VtPSdDY1hB8celOhyeT'
     api_url = 'http://2captcha.com/'
     api_key = 'e2ff41d9044dee2a63eebd2dea8dada3'
@@ -40,7 +40,7 @@ class Scraper:
         self.pool = ThreadPoolExecutor(max_workers=8)
         self.product_model = Product()
         self.configuration_model = Configuration()
-        self.logger = logging.getLogger('pricegrabber.scraper')
+        self.logger = get_task_logger('pricegrabber.scraper')
         self.session = requests.Session()
         self.bypass_started = False
 
