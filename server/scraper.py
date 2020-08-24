@@ -109,7 +109,7 @@ class Scraper(Task):
                 pass
             except ValueError:
                 self.logger.error('Validation failed while saving product %s', product['url'])
-        self.driver.close()
+        return True
 
     def fetch(self, url):
         content = self.get_content(url)
