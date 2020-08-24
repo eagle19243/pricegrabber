@@ -19,8 +19,12 @@ class Scheduler(PeriodicTask):
         if config:
             interval = config['interval']
             last_run_time = config['last_run_time']
-            delta = datetime.now() - last_run_time
-            if delta.seconds > interval * 60 * 60:
+
+            if 'last_run_time' in config:
+                delta = datetime.now() - last_run_time
+                if delta.seconds > interval * 60 * 60:
+                    self.app.tasks['server.scraper.Scraper'].apply_async()
+            else:
                 self.app.tasks['server.scraper.Scraper'].apply_async()
         else:
             interval = 2
