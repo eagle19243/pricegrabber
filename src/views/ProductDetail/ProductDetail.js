@@ -203,111 +203,6 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   return (
     <div>
       <GridContainer>
-        <GridItem xs={12}>
-          <Card>
-            <CardBody>
-              <GridContainer>
-                <GridItem xs={12} sm={6} md={4}>
-                  <CustomInput
-                    success={codeState === "success"} 
-                    error={codeState === "error"}
-                    labelText="Code"
-                    id="code"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      onChange: (event) => {
-                        if (validateRequired(event.target.value)) {
-                          setCodeState("success");
-                        } else {
-                          setCodeState("error");
-                        }
-                        setCode(event.target.value)
-                      },
-                      value: code
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={8}>
-                  <CustomInput
-                    success={urlState === "success"}
-                    error={urlState === "error"}
-                    labelText="Product URL"
-                    id="url"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      onChange: (event) => {
-                        if (validateURL(event.target.value)) {
-                          seturlState("success");
-                        } else {
-                          seturlState("error");
-                        }
-                        seturl(event.target.value)
-                      },
-                      value: url,
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={3} md={2}>
-                  <CustomInput
-                    success={costState === "success"}
-                    error={costState === "error"}
-                    labelText="Cost"
-                    id="cost"
-                    align="right"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      onChange: (event) => {
-                        if (validateFloat(event.target.value)) {
-                          setCostState("success");
-                        } else {
-                          setCostState("error");
-                        }
-                        setCost(event.target.value)
-                      },
-                      value: cost,
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={3} md={2}>
-                  <CustomInput
-                    success={profitState === "success"}
-                    error={profitState === "error"}
-                    labelText="Profit"
-                    id="profit"
-                    align="right"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      onChange: (event) => {
-                        if (validateFloat(event.target.value)) {
-                          setProfitState("success");
-                        } else {
-                          setProfitState("error");
-                        }
-                        setProfit(event.target.value)
-                      },
-                      value: profit
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-            </CardBody>
-            <CardFooter>
-              <Button color="primary" onClick={doSave}>Save</Button>
-            </CardFooter>
-          </Card>
-        </GridItem>
         { currentProduct && currentProduct.name && currentProduct.updated && currentProduct.review_rating &&
         <GridItem xs={12}>
           <Card>
@@ -434,6 +329,111 @@ function ProductDetail({ dispatch, match, currentProduct }) {
           </Card>
         </GridItem>
         }
+        <GridItem xs={12}>
+          <Card>
+            <CardBody>
+              <GridContainer>
+                <GridItem xs={12} sm={6} md={4}>
+                  <CustomInput
+                    success={codeState === "success"} 
+                    error={codeState === "error"}
+                    labelText="Code"
+                    id="code"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        if (validateRequired(event.target.value)) {
+                          setCodeState("success");
+                        } else {
+                          setCodeState("error");
+                        }
+                        setCode(event.target.value)
+                      },
+                      value: code
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={8}>
+                  <CustomInput
+                    success={urlState === "success"}
+                    error={urlState === "error"}
+                    labelText="Product URL"
+                    id="url"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        if (validateURL(event.target.value)) {
+                          seturlState("success");
+                        } else {
+                          seturlState("error");
+                        }
+                        seturl(event.target.value)
+                      },
+                      value: url,
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={3} md={2}>
+                  <CustomInput
+                    success={costState === "success"}
+                    error={costState === "error"}
+                    labelText="Cost"
+                    id="cost"
+                    align="right"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        if (validateFloat(event.target.value)) {
+                          setCostState("success");
+                        } else {
+                          setCostState("error");
+                        }
+                        setCost(event.target.value)
+                      },
+                      value: cost,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={3} md={2}>
+                  <CustomInput
+                    success={profitState === "success"}
+                    error={profitState === "error"}
+                    labelText="Profit"
+                    id="profit"
+                    align="right"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        if (validateFloat(event.target.value)) {
+                          setProfitState("success");
+                        } else {
+                          setProfitState("error");
+                        }
+                        setProfit(event.target.value)
+                      },
+                      value: profit
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+            </CardBody>
+            <CardFooter>
+              <Button color="primary" onClick={doSave}>Save</Button>
+            </CardFooter>
+          </Card>
+        </GridItem>
       </GridContainer>
     </div>
   );
