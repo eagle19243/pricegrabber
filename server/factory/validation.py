@@ -4,6 +4,8 @@ from datetime import datetime
 
 class Validator(object):
     def validate_type(self, element, desired_type):
+        if desired_type == 'bool':
+            return type(element) == bool
         if desired_type == 'int':
             return type(element) == int
         if desired_type == 'string':

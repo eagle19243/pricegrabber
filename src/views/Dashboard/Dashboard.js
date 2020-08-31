@@ -62,7 +62,7 @@ function Dashboard({dispatch, productCount, lastRunTime}) {
               </CardIcon>
               <p className={classes.cardCategory}>Last run time</p>
               <h3 className={classes.cardTitle}>
-                {lastTime ? moment().utc(lastTime).local().format('MM/DD/YYYY HH:mm:ss') : ""}
+                {lastTime ? moment.utc(lastTime).local().format('MM/DD/YYYY HH:mm:ss') : ""}
               </h3>
             </CardHeader>
           </Card>

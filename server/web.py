@@ -126,11 +126,18 @@ def update_product():
 def get_product():
     data = request.get_json()
     product_id = data['productId']
+    filter_errored = data['filterErrored']
+    filter_updated = data['filterUpdated']
 
     if product_id:
         data = product_model.find_by_id(product_id)
     else:
-        data = product_model.find({})
+        query = {
+            'is_errored': True if filter_errored else {'$in': [True, False, None]},
+            'is_updated': True if filter_updated else {'$in': [True, False, None]}
+        }
+
+        data = product_model.find(query)
     return jsonify({
         'success': True,
         'data': data

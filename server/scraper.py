@@ -51,17 +51,12 @@ class Scraper(Task):
         config = self.configuration_model.find_one()
         self.configuration_model.update(config['_id'], {'last_run_time': datetime.now()})
 
-        regex = r'https:\/\/www.skroutz.gr\/.*\.html'
         products = self.product_model.find({})
         futures = {}
 
         for product in products:
             url = product['url']
             url = url.strip()
-            if not re.match(regex, url) or url.count('?') > 1:
-                self.logger.error('Invalid URL %s', url)
-                continue
-
             future = self.pool.submit(self.fetch, url)
             futures[future] = product
 
@@ -72,37 +67,46 @@ class Scraper(Task):
             if data is None:
                 continue
 
-            self.logger.info('scraped %s', product['url'])
-
             try:
-                product['name'] = data['name']
-                product['review_count'] = data['review']['count']
-                product['review_rating'] = data['review']['rating']
-                today = str(date.today())
-
-                if 'price' not in product:
-                    product['price'] = {}
-
-                product['price'][today] = data['price']
-
-                if 'competitors' in product:
-                    for shop, price in data['competitors'].items():
-                        if shop in product['competitors']:
-                            product['competitors'][shop][today] = price
-                            keys = product['competitors'][shop].keys()
-                            if len(keys) > 7:
-                                product['competitors'][shop].pop(keys[0])
-                        else:
-                            product['competitors'][shop] = {}
-                            product['competitors'][shop][today] = price
-                else:
-                    product['competitors'] = {}
-                    for shop, price in data['competitors'].items():
-                        product['competitors'][shop] = {}
-                        product['competitors'][shop][today] = price
-
                 product.pop('created', None)
                 product.pop('updated', None)
+
+                if not data['is_errored']:
+                    product['name'] = data['name']
+                    product['review_count'] = data['review']['count']
+                    product['review_rating'] = data['review']['rating']
+                    product['is_errored'] = data['is_errored']
+                    product['error'] = ''
+                    product['is_updated'] = True
+                    today = str(date.today())
+
+                    if 'price' not in product:
+                        product['price'] = {}
+
+                    product['price'][today] = data['price']
+
+                    if 'competitors' in product:
+                        for shop, price in data['competitors'].items():
+                            if shop in product['competitors']:
+                                product['competitors'][shop][today] = price
+                                keys = product['competitors'][shop].keys()
+                                if len(keys) > 7:
+                                    product['competitors'][shop].pop(keys[0])
+                            else:
+                                product['competitors'][shop] = {}
+                                product['competitors'][shop][today] = price
+                    else:
+                        product['competitors'] = {}
+                        for shop, price in data['competitors'].items():
+                            product['competitors'][shop] = {}
+                            product['competitors'][shop][today] = price
+                    self.logger.info('updated %s', product['url'])
+                else:
+                    product['is_errored'] = data['is_errored']
+                    product['error'] = data['error']
+                    product['is_updated'] = False
+                    self.logger.info('errored %s', product['url'])
+
                 self.product_model.update(product.pop('_id'), product)
             except KeyError:
                 self.logger.error('KeyError in processing product %s', product['url'])
@@ -112,6 +116,14 @@ class Scraper(Task):
         return True
 
     def fetch(self, url):
+        regex = r'https:\/\/www.skroutz.gr\/.*\.html'
+
+        if not re.match(regex, url) or url.count('?') > 1:
+            return {
+                'is_errored': True,
+                'error': 'Invalid URL'
+            }
+
         content = self.get_content(url)
 
         if not content:
@@ -142,11 +154,14 @@ class Scraper(Task):
                 competitor_name = shops[str(product['shop_id'])]['name']
                 competitor_price = product['raw_price']
                 competitors[competitor_name] = competitor_price
+
             return {
                 'name': name,
                 'price': price,
                 'review': review,
-                'competitors': competitors
+                'competitors': competitors,
+                'is_errored': not data['has_products'],
+                'error': '' if data['has_products'] else 'Product does not exist'
             }
         except KeyError:
             self.logger.error('KeyError in fetching product %s', url)

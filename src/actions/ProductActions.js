@@ -24,11 +24,11 @@ export function addProduct(product) {
   }
 }
 
-export function getProduct(productId) {
+export function getProduct(productId=null, filterErrored=false, filterUpdated=false) {
   return (dispatch) => {
     dispatch(startLoading());
 
-    API.getProduct(productId).then(response => {
+    API.getProduct(productId, filterErrored, filterUpdated).then(response => {
       if (productId) {
         dispatch({
           type: PRODUCT_GET_SUCCESS,

@@ -28,22 +28,24 @@ const addProduct = (product) => {
   return api.post('product/add', product);
 }
 
-const getProduct = (productId = null) => {
+const getProduct = (productId = null, filterErrored=false, filterUpdated=false) => {
   return api.post('product/get', {
-    productId : productId
+    productId,
+    filterErrored,
+    filterUpdated
   });
 }
 
 const removeProduct = (productId = null) => {
   return api.post('product/remove', {
-    productId : productId
+    productId
   });
 }
 
 const updateProduct = (productId, product) => {
   return api.post('product/update', {
-    productId : productId,
-    product : product
+    productId,
+    product
   });
 }
 

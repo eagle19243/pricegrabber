@@ -18,7 +18,10 @@ class Product(object):
             'price': 'object',
             'review_count': 'int',
             'review_rating': 'int/float',
-            'competitors': 'object'
+            'competitors': 'object',
+            'is_updated': 'bool',
+            'is_errored': 'bool',
+            'error': 'string'
         }
 
         self.create_required_fields = ['code', 'url', 'cost', 'profit']
@@ -31,7 +34,8 @@ class Product(object):
 
         # Fields optional for UPDATE
         self.update_optional_fields = ['code', 'url', 'cost', 'profit', 'name', 'price',
-                                       'review_count', 'review_rating', 'competitors']
+                                       'review_count', 'review_rating', 'competitors',
+                                       'is_updated', 'is_errored', 'error']
 
     def create(self, product):
         # Validator will throw error if invalid
