@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import ChartistGraph from "react-chartist";
-import Chartist from "chartist";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
@@ -281,7 +280,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                     data={chartData}
                     type="Line"
                     options={{
-                      lineSmooth: Chartist.Interpolation.cardinal({
+                      lineSmooth: window.Chartist.Interpolation.cardinal({
                         tension: 0
                       }),
                       low: 0,
@@ -291,7 +290,10 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                         right: 0,
                         bottom: 0,
                         left: 0
-                      }
+                      },
+                      plugins: [
+                        window.Chartist.plugins.tooltip()
+                      ],
                     }}
                     listener={{
                       draw: function(data) {
@@ -306,7 +308,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                                 .translate(0, data.chartRect.height())
                                 .stringify(),
                               to: data.path.clone().stringify(),
-                              easing: Chartist.Svg.Easing.easeOutQuint
+                              easing: window.Chartist.Svg.Easing.easeOutQuint
                             }
                           });
                         } else if (data.type === "point") {
@@ -421,7 +423,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                         } else {
                           setProfitState("error");
                         }
-                        setProfit(event.target.value)
+                        setProfit(event.target.value);
                       },
                       value: profit
                     }}
