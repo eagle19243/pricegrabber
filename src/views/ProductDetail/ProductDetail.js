@@ -257,7 +257,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
           <Card>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={6} lg={4}>
+                <GridItem xs={12} sm={12} md={12} lg={12}>
                   <Table
                     tableHeaderColor="primary"
                     tableHead={tableHead}

@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 import { push } from "connected-react-router";
 import moment from "moment";
 // @material-ui/core components
-import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 // core components
