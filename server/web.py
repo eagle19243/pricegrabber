@@ -2,6 +2,8 @@
 """
 import os
 import datetime
+import csv
+import codecs
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask import Flask, request, jsonify, send_from_directory
@@ -188,4 +190,46 @@ def update_configuration():
     return jsonify({
         'success': success,
         'message': message
+    })
+
+
+@APP.route('/tool/import_mass_products', methods=['POST'])
+@jwt_required
+def import_mass_products():
+    file = request.files.get('file')
+    stream = codecs.iterdecode(file.stream, 'utf-8')
+    reader = csv.reader(stream, dialect=csv.excel)
+
+    row_index = 0
+    for row in reader:
+        code = row[0]
+        url = row[1]
+        row_index = row_index + 1
+
+        try:
+            products = product_model.find({
+                'code': code
+            })
+
+            if products and len(products):
+                product_model.update(products[0]['_id'], {
+                    'code': code,
+                    'url': url
+                })
+            else:
+                product_model.create({
+                    'code': code,
+                    'url': url
+                })
+        except ValueError:
+            return jsonify({
+                'success': False,
+                'data': row_index,
+                'message': 'Invalid value in row %s' % row_index
+            })
+
+    return jsonify({
+        'success': True,
+        'data': 'products',
+        'message': 'Product added successfully'
     })

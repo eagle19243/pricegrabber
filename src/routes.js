@@ -6,6 +6,7 @@ import Settings from "@material-ui/icons/Settings";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard";
 import ConfigurationsPage from "views/Configurations/Configurations";
+import ToolsPage from "views/Tools/Tools";
 import ProductsPage from "views/Products/Products";
 import { isAuthenticated, logout } from "actions/AuthActions";
 
@@ -22,6 +23,13 @@ export const Routes = [
     name: "Products",
     icon: "content_paste",
     component: ProductsPage,
+    layout: "/app"
+  },
+  {
+    path: "/tools",
+    name: "Tools",
+    icon: "handyman",
+    component: ToolsPage,
     layout: "/app"
   },
   {

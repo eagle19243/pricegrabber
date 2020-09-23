@@ -24,10 +24,12 @@ class Product(object):
             'error': 'string'
         }
 
-        self.create_required_fields = ['code', 'url', 'cost', 'profit']
+        self.create_required_fields = ['code', 'url']
 
         # Fields optional for CREATE
-        self.create_optional_fields = []
+        self.create_optional_fields = ['cost', 'profit', 'name', 'price',
+                                       'review_count', 'review_rating', 'competitors',
+                                       'is_updated', 'is_errored', 'error']
 
         # Fields required for UPDATE
         self.update_required_fields = []

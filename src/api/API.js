@@ -61,6 +61,13 @@ const updateConfig = (config) => {
   return api.post('configuration/update', config);
 }
 
+const importMassProducts = (file) => {
+  const data = new FormData();
+  data.append('file', file);
+  
+  return api.post('tool/import_mass_products', data);
+}
+
 export default {
   login,
   getUser,
@@ -70,5 +77,6 @@ export default {
   updateProduct,
   getProductCount,
   getConfig,
-  updateConfig
+  updateConfig,
+  importMassProducts,
 }
