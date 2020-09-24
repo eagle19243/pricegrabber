@@ -200,13 +200,16 @@ def import_mass_products():
     stream = codecs.iterdecode(file.stream, 'utf-8')
     reader = csv.reader(stream, dialect=csv.excel)
 
-    row_index = 0
+    row_num = 0
     for row in reader:
-        code = row[0]
-        url = row[1]
-        row_index = row_index + 1
+        row_num = row_num + 1
 
         try:
+            code = row[0]
+            url = row[1]
+            cost = float(row[2])
+            profit = float(row[3])
+
             products = product_model.find({
                 'code': code
             })
@@ -214,18 +217,22 @@ def import_mass_products():
             if products and len(products):
                 product_model.update(products[0]['_id'], {
                     'code': code,
-                    'url': url
+                    'url': url,
+                    'cost': cost,
+                    'profit': profit
                 })
             else:
                 product_model.create({
                     'code': code,
-                    'url': url
+                    'url': url,
+                    'cost': cost,
+                    'profit': profit
                 })
         except ValueError:
             return jsonify({
                 'success': False,
-                'data': row_index,
-                'message': 'Invalid value in row %s' % row_index
+                'data': row_num,
+                'message': 'Invalid value in row %s' % row_num
             })
 
     return jsonify({
