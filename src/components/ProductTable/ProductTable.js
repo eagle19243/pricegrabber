@@ -57,7 +57,9 @@ export default function ProductTable(props) {
           headerStyle: {
             backgroundColor: classes[tableHeaderColor + 'TableHeader'].color
           },
-          actionsColumnIndex: -1
+          actionsColumnIndex: -1,
+          pageSizeOptions: [20, 50, 100, 200],
+          pageSize: 50,
         }} 
         {...rest}
       />
