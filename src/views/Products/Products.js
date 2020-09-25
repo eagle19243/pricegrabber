@@ -18,10 +18,23 @@ import { getProduct, removeProduct } from "actions/ProductActions";
 function Products({dispatch, tableData}) {
   const [filterErrored, setFilterErrored] = React.useState(false);
   const [filterUpdated, setFilterUpdated] = React.useState(false);
+  const [countErrored, setCountErrored] = React.useState(0);
+  const [countUpdated, setCountUpdated] = React.useState(0);
 
   React.useEffect(() => {
     dispatch(getProduct());
   }, []);
+
+  React.useEffect(() => {
+    for (const product of tableData) {
+      if (product.is_errored) {
+        setCountErrored(countErrored++);
+      }
+      if (product.is_updated) {
+        setCountUpdated(countUpdated++);
+      }
+    }
+  }, [tableData]);
 
   const tableColumns = [
     {title: 'Code', field: 'code', width: 20},
@@ -78,7 +91,7 @@ function Products({dispatch, tableData}) {
 
   return (
     <GridContainer>
-      <GridItem xs={12} sm={6} md={6}>
+      <GridItem xs={12} sm={12} md={8}>
         <GridItem xs={12} sm={12} md={12}>
           <FormControlLabel 
             control={
@@ -88,7 +101,9 @@ function Products({dispatch, tableData}) {
                 color="primary"
               />
             }
-            label="Products with issue on updating"
+            label={`Products with issue on updating (${countErrored} products/
+              ${tableData.length === 0 ? 0 : countErrored/tableData.length}% 
+              of products with issue in url)`}
           />
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
@@ -100,11 +115,13 @@ function Products({dispatch, tableData}) {
                 color="primary"
               />
             }
-            label="Products updated"
+            label={`Products updated (${countUpdated} products/
+              ${tableData.length === 0 ? 0 : countUpdated/tableData.length} % 
+              of products with updated)`}
           />
         </GridItem>
       </GridItem>
-      <GridItem xs={12} sm={6} md={6}>
+      <GridItem xs={12} sm={12} md={4}>
         <Button color="primary" onClick={doFilter} style={{float: "right"}}>Apply Filter</Button>
       </GridItem>
       <GridItem xs={12} sm={12} md={12}>
