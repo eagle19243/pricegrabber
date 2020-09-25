@@ -101,8 +101,8 @@ function Products({dispatch, tableData}) {
                 color="primary"
               />
             }
-            label={`Products with issue on updating (${countErrored} products/
-              ${tableData.length === 0 ? 0 : countErrored/tableData.length}% 
+            label={`Products with issue on updating (${countErrored} 
+              products/${tableData.length === 0 ? 0 : countErrored/tableData.length}% 
               of products with issue in url)`}
           />
         </GridItem>
@@ -115,8 +115,8 @@ function Products({dispatch, tableData}) {
                 color="primary"
               />
             }
-            label={`Products updated (${countUpdated} products/
-              ${tableData.length === 0 ? 0 : countUpdated/tableData.length} % 
+            label={`Products updated (${countUpdated} 
+              products/${tableData.length === 0 ? 0 : countUpdated/tableData.length}% 
               of products with updated)`}
           />
         </GridItem>
