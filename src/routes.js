@@ -8,6 +8,7 @@ import DashboardPage from "views/Dashboard/Dashboard";
 import ConfigurationsPage from "views/Configurations/Configurations";
 import ToolsPage from "views/Tools/Tools";
 import ProductsPage from "views/Products/Products";
+import CompetitorsPage from "views/Competitors/Competitors";
 import { isAuthenticated, logout } from "actions/AuthActions";
 
 export const Routes = [
@@ -23,6 +24,13 @@ export const Routes = [
     name: "Products",
     icon: "content_paste",
     component: ProductsPage,
+    layout: "/app"
+  },
+  {
+    path: "/competitors",
+    name: "Competitors",
+    icon: "store",
+    component: CompetitorsPage,
     layout: "/app"
   },
   {

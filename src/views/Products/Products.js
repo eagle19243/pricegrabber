@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { push } from "connected-react-router";
 import moment from "moment";
-// react plugin for creating charts
-import ChartistGraph from "react-chartist";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -18,7 +16,7 @@ import Card from "components/Card/Card.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import ProductTable from "components/ProductTable/ProductTable";
+import DataTable from "components/DataTable/DataTable";
 import { getProduct, removeProduct } from "actions/ProductActions";
 import {
   grayColor,
@@ -192,11 +190,13 @@ function Products({dispatch, tableData}) {
                 </Button>
               </GridItem>
               <GridItem xs={12}>
-                <ProductTable
+                <DataTable
                   title={""}
                   tableHeaderColor="primary"
                   tableColumns={tableColumns}
                   tableData={tableData} 
+                  pageSize={50} 
+                  pageSizeOptions={[20, 50, 100, 200]}
                   actions={actions}
                 />
               </GridItem>
@@ -211,7 +211,7 @@ function Products({dispatch, tableData}) {
 const mapStateToProps = ({ product }) => {
   const { tableData } = product;
   return {
-    tableData: tableData
+    tableData,
   }
 }
 

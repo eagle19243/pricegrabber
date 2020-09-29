@@ -38,13 +38,15 @@ const styles = {
 }
 const useStyles = makeStyles(styles);
 
-export default function ProductTable(props) {
+export default function DataTable(props) {
   const classes = useStyles();
   const {
     title, 
     tableColumns, 
     tableData, 
     tableHeaderColor, 
+    pageSize,
+    pageSizeOptions,
     ...rest 
   } = props;
   return (
@@ -58,8 +60,8 @@ export default function ProductTable(props) {
             backgroundColor: classes[tableHeaderColor + 'TableHeader'].color
           },
           actionsColumnIndex: -1,
-          pageSizeOptions: [20, 50, 100, 200],
-          pageSize: 50,
+          pageSizeOptions,
+          pageSize,
         }} 
         {...rest}
       />
@@ -67,11 +69,11 @@ export default function ProductTable(props) {
   );
 }
 
-ProductTable.defaultProps = {
+DataTable.defaultProps = {
   tableHeaderColor: "gray"
 };
 
-ProductTable.propTypes = {
+DataTable.propTypes = {
   tableHeaderColor: PropTypes.oneOf([
     "warning",
     "primary",

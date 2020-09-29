@@ -10,6 +10,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from .models.user import User
 from .models.product import Product
+from .models.competitor import Competitor
 from .models.configuration import Configuration
 from .util import load_config, JSONEncoder
 
@@ -28,6 +29,7 @@ APP.json_encoder = JSONEncoder
 
 user_model = User()
 product_model = Product()
+competitor_model = Competitor()
 configuration_model = Configuration()
 
 
@@ -162,6 +164,60 @@ def get_product_count():
 def remove_product():
     data = request.get_json()
     success = product_model.delete(data['productId'])
+    message = 'Remove successful' if success else 'Remove failed'
+    return jsonify({
+        'success': success,
+        'message': message
+    })
+
+
+@APP.route('/competitor/add', methods=['POST'])
+@jwt_required
+def add_competitor():
+    data = request.get_json()
+    id = competitor_model.create(data)
+    return jsonify({
+        'success': True,
+        'data': id,
+        'message': 'Competitor added successfully'
+    })
+
+
+@APP.route('/competitor/update', methods=['POST'])
+@jwt_required
+def update_competitor():
+    data = request.get_json()
+    id = data['competitorId']
+    competitor = data['competitor']
+    success = competitor_model.update(id, competitor)
+    message = 'Update successful' if success else 'Update failed'
+    return jsonify({
+        'success': success,
+        'message': message
+    })
+
+
+@APP.route('/competitor/get', methods=['POST'])
+@jwt_required
+def get_competitor():
+    data = request.get_json()
+    id = data['competitorId']
+
+    if id:
+        data = competitor_model.find_by_id(id)
+    else:
+        data = competitor_model.find({})
+    return jsonify({
+        'success': True,
+        'data': data
+    })
+
+
+@APP.route('/competitor/remove', methods=['POST'])
+@jwt_required
+def remove_competitor():
+    data = request.get_json()
+    success = competitor_model.delete(data['competitorId'])
     message = 'Remove successful' if success else 'Remove failed'
     return jsonify({
         'success': success,

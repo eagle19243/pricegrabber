@@ -49,6 +49,29 @@ const updateProduct = (productId, product) => {
   });
 }
 
+const addCompetitor = (competitor) => {
+  return api.post('competitor/add', competitor);
+}
+
+const getCompetitor = (competitorId = null) => {
+  return api.post('competitor/get', {
+    competitorId,
+  });
+}
+
+const removeCompetitor = (competitorId = null) => {
+  return api.post('competitor/remove', {
+    competitorId
+  });
+}
+
+const updateCompetitor = (competitorId, competitor) => {
+  return api.post('competitor/update', {
+    competitorId,
+    competitor
+  });
+}
+
 const getProductCount = () => {
   return api.post('product/get_count');
 }
@@ -76,6 +99,10 @@ export default {
   removeProduct,
   updateProduct,
   getProductCount,
+  addCompetitor,
+  getCompetitor,
+  removeCompetitor,
+  updateCompetitor,
   getConfig,
   updateConfig,
   importMassProducts,

@@ -2,21 +2,21 @@ import { push } from "connected-react-router";
 import API from "api/API";
 import { startLoading, stopLoading, showAlert } from "actions/AppActions"
 import {
-  PRODUCT_GET_SUCCESS, PRODUCT_REMOVE_SUCCESS, GET_PRODUCT_COUNT,
+  COMPETITOR_GET_SUCCESS, COMPETITOR_REMOVE_SUCCESS,
 } from "types";
 
-export function addProduct(product) {
+export function addCompetitor(competitor) {
   return (dispatch) => {
     dispatch(startLoading());
 
-    API.addProduct(product).then(response => {
+    API.addCompetitor(competitor).then(response => {
       dispatch(stopLoading());
 
       if (response.problem) {
         dispatch(showAlert(response.problem, 'error'));
       } else {
         dispatch(showAlert(response.data.message, 'success'));
-        dispatch(push('/app/products'));
+        dispatch(push('/app/competitors'));
       }
     }).catch(error => {
       console.log(error.message);
@@ -24,21 +24,21 @@ export function addProduct(product) {
   }
 }
 
-export function getProduct(productId=null, filterErrored=false, filterUpdated=false) {
+export function getCompetitor(competitorId=null) {
   return (dispatch) => {
     dispatch(startLoading());
 
-    API.getProduct(productId, filterErrored, filterUpdated).then(response => {
-      if (productId) {
+    API.getCompetitor(competitorId).then(response => {
+      if (competitorId) {
         dispatch({
-          type: PRODUCT_GET_SUCCESS,
+          type: COMPETITOR_GET_SUCCESS,
           payload: {
-            currentProduct: response.data.data
+            currentCompetitor: response.data.data
           }
         });
       } else {
         dispatch({
-          type: PRODUCT_GET_SUCCESS,
+          type: COMPETITOR_GET_SUCCESS,
           payload: {
             tableData: response.data.data
           }
@@ -51,11 +51,11 @@ export function getProduct(productId=null, filterErrored=false, filterUpdated=fa
   }
 }
 
-export function removeProduct(productId) {
+export function removeCompetitor(competitorId) {
   return (dispatch) => {
     dispatch(startLoading());
 
-    API.removeProduct(productId).then(response => {
+    API.removeCompetitor(competitorId).then(response => {
       dispatch(stopLoading());
 
       if (response.data && !response.data.success) {
@@ -65,9 +65,9 @@ export function removeProduct(productId) {
       } else {
         dispatch(showAlert(response.data.message, 'success'));
         dispatch({
-          type: PRODUCT_REMOVE_SUCCESS,
+          type: COMPETITOR_REMOVE_SUCCESS,
           payload: {
-            productId: productId
+            competitorId,
           }
         });
       }
@@ -77,11 +77,11 @@ export function removeProduct(productId) {
   }
 }
 
-export function updateProduct(productId, product) {
+export function updateCompetitor(competitorId, competitor) {
   return (dispatch) => {
     dispatch(startLoading());
 
-    API.updateProduct(productId, product).then(response => {
+    API.updateCompetitor(competitorId, competitor).then(response => {
       dispatch(stopLoading());
 
       if (response.data && !response.data.success) {
@@ -91,21 +91,6 @@ export function updateProduct(productId, product) {
       } else {
         dispatch(showAlert(response.data.message, 'success'));
       }
-    }).catch(error => {
-      console.log(error.message);
-    });
-  }
-}
-
-export function getProductCount() {
-  return (dispatch) => {
-    API.getProductCount().then(response => {
-      dispatch({
-        type: GET_PRODUCT_COUNT,
-        payload: {
-          productCount: response.data.data
-        }
-      });
     }).catch(error => {
       console.log(error.message);
     });
