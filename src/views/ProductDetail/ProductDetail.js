@@ -7,6 +7,10 @@ import ChartistGraph from "react-chartist";
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
 import Rating from "@material-ui/lab/Rating";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -24,8 +28,10 @@ import { addProduct, updateProduct, getProduct } from "actions/ProductActions";
 import {
   grayColor,
 } from "assets/jss/material-dashboard-react.js";
+import customSelectStyle from "assets/jss/material-dashboard-react/customSelectStyle";
 
 const styles = {
+  ...customSelectStyle,
   cardCategory: {
     color: grayColor[0],
     margin: "0",
@@ -69,6 +75,8 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   const [costState, setCostState] = React.useState("");
   const [profit, setProfit] = React.useState("");
   const [profitState, setProfitState] = React.useState("");
+  const [rule, setRule] = React.useState(0);
+  const [competitorExclude, setCompetitorExclude] = React.useState(0);
   const [name, setName] = React.useState("");
   const [lastTimeUpdated, setLastTimeUpdated] = React.useState(null)
   const [reviewCount, setReviewCount] = React.useState(0);
@@ -428,6 +436,120 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       value: profit
                     }}
                   />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={6} md={4}>
+                  <FormControl 
+                    fullWidth
+                    className={classes.selectFormControl}
+                  >
+                    <InputLabel
+                      htmlFor="select-rule"
+                      className={classes.selectLabel}
+                    >
+                      Choose a Rule
+                    </InputLabel>
+                    <Select 
+                      MenuProps={{
+                        className: classes.selectMenu
+                      }}
+                      classes={{
+                        select: classes.select
+                      }}
+                      value={rule}
+                      onChange={(event) => {
+                        setRule(event.target.value)
+                      }}
+                      inputProps={{
+                        name: "selectRule",
+                        id: "select-rule"
+                      }}
+                    >
+                      <MenuItem
+                        disabled
+                        classes={{
+                          root: classes.selectMenuItem
+                        }}
+                      >
+                        Choose a Rule
+                      </MenuItem>
+                      <MenuItem
+                        classes={{
+                          root: classes.slectMenuItem,
+                          selected: classes.selectMenuItemSelected
+                        }}
+                        value="0"
+                      >
+                        No touch
+                      </MenuItem>
+                      <MenuItem
+                        classes={{
+                          root: classes.slectMenuItem,
+                          selected: classes.selectMenuItemSelected
+                        }}
+                        value="1"
+                      >
+                        Set price (-+)percent/exact amount of min. Price
+                      </MenuItem>
+                      <MenuItem
+                        classes={{
+                          root: classes.slectMenuItem,
+                          selected: classes.selectMenuItemSelected
+                        }}
+                        value="2"
+                      >
+                        Set price according to position
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </GridItem>
+                <GridItem xs={12} sm={6} md={4}>
+                  <FormControl 
+                    fullWidth
+                    className={classes.selectFormControl}
+                  >
+                    <InputLabel
+                      htmlFor="select-competitor"
+                      className={classes.selectLabel}
+                    >
+                      Choose a Manufacture
+                    </InputLabel>
+                    <Select 
+                      MenuProps={{
+                        className: classes.selectMenu
+                      }}
+                      classes={{
+                        select: classes.select
+                      }}
+                      value={competitorExclude}
+                      onChange={(event) => {
+                        setCompetitorExclude(event.target.value)
+                      }}
+                      inputProps={{
+                        name: "selectCompetitor",
+                        id: "select-competitor"
+                      }}
+                    >
+                      <MenuItem
+                        disabled
+                        classes={{
+                          root: classes.selectMenuItem
+                        }}
+                      >
+                        Choose a Manufacture
+                      </MenuItem>
+                      <MenuItem
+                        classes={{
+                          root: classes.slectMenuItem,
+                          selected: classes.selectMenuItemSelected
+                        }}
+                        value="0"
+                      >
+                        None
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
                 </GridItem>
               </GridContainer>
             </CardBody>
