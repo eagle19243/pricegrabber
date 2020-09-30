@@ -15,6 +15,7 @@ from celery import Task
 from celery.utils.log import get_task_logger
 from .models.product import Product
 from .models.configuration import Configuration
+from .models.store import Store
 
 
 class Scraper(Task):
@@ -39,6 +40,7 @@ class Scraper(Task):
 
         self.pool = ThreadPoolExecutor(max_workers=8)
         self.product_model = Product()
+        self.store_model = Store()
         self.configuration_model = Configuration()
         self.logger = get_task_logger('pricegrabber.scraper')
         self.session = requests.Session()
@@ -95,11 +97,13 @@ class Scraper(Task):
                             else:
                                 product['competitors'][shop] = {}
                                 product['competitors'][shop][today] = price
+                            self.store_model.create(shop)
                     else:
                         product['competitors'] = {}
                         for shop, price in data['competitors'].items():
                             product['competitors'][shop] = {}
                             product['competitors'][shop][today] = price
+                            self.store_model.create(shop)
                     self.logger.info('updated %s', product['url'])
                 else:
                     product['is_errored'] = data['is_errored']

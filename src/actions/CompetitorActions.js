@@ -2,7 +2,7 @@ import { push } from "connected-react-router";
 import API from "api/API";
 import { startLoading, stopLoading, showAlert } from "actions/AppActions"
 import {
-  COMPETITOR_GET_SUCCESS, COMPETITOR_REMOVE_SUCCESS,
+  COMPETITOR_GET_SUCCESS, COMPETITOR_REMOVE_SUCCESS, COMPETITIR_GET_ALL_STORE_NAMES_SUCCESS,
 } from "types";
 
 export function addCompetitor(competitor) {
@@ -91,6 +91,21 @@ export function updateCompetitor(competitorId, competitor) {
       } else {
         dispatch(showAlert(response.data.message, 'success'));
       }
+    }).catch(error => {
+      console.log(error.message);
+    });
+  }
+}
+
+export function getAllStoreNames() {
+  return (dispatch) => {
+    API.getAllStoreNames().then(response => {
+      dispatch({
+        type: COMPETITIR_GET_ALL_STORE_NAMES_SUCCESS,
+        payload: {
+          allStoreNames: response.data.data
+        }
+      });
     }).catch(error => {
       console.log(error.message);
     });

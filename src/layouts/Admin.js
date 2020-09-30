@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import ProductDetail from "views/ProductDetail/ProductDetail";
+import CompetitorDetail from "views/CompetitorDetail/CompetitorDetail";
 import { Routes } from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
@@ -37,6 +38,8 @@ const switchRoutes = (
     })}
     <Route path="/app/products/new" exact component={ProductDetail} />
     <Route path="/app/products/:id" exact component={ProductDetail} />
+    <Route path="/app/competitors/new" exact component={CompetitorDetail} />
+    <Route path="/app/competitors/:id" exact component={CompetitorDetail} />
     <Redirect from="/app" to="/app/dashboard" />
   </Switch>
 );

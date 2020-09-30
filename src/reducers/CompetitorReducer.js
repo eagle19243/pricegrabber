@@ -1,9 +1,11 @@
 import {
   COMPETITOR_ADD_REQUEST, COMPETITOR_ADD_SUCCESS, COMPETITOR_GET_REQUEST, COMPETITOR_GET_SUCCESS,
   COMPETITOR_REMOVE_REQUEST, COMPETITOR_REMOVE_SUCCESS, COMPETITOR_UPDATE_REQUEST, COMPETITOR_UPDATE_SUCCESS,
+  COMPETITIR_GET_ALL_STORE_NAMES_REQUEST, COMPETITIR_GET_ALL_STORE_NAMES_SUCCESS
 } from "types";
 
 const INITIAL_STATE = {
+  allStoreNames: [],
   tableData: [],
   currentCompetitor: null,
 };
@@ -25,6 +27,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         tableData: tableData
+      };
+    case COMPETITIR_GET_ALL_STORE_NAMES_SUCCESS:
+      return {
+        ...state,
+        allStoreNames: payload.allStoreNames
       };
     default:
       return state;

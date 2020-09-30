@@ -190,14 +190,14 @@ function Products({dispatch, tableData}) {
                 </Button>
               </GridItem>
               <GridItem xs={12}>
-                <DataTable
-                  title={""}
-                  tableHeaderColor="primary"
-                  tableColumns={tableColumns}
+                <DataTable 
+                  title={""} 
+                  tableHeaderColor="primary" 
+                  tableColumns={tableColumns} 
                   tableData={tableData} 
                   pageSize={50} 
-                  pageSizeOptions={[20, 50, 100, 200]}
-                  actions={actions}
+                  pageSizeOptions={[20, 50, 100, 200]} 
+                  actions={actions} 
                 />
               </GridItem>
             </GridContainer>

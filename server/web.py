@@ -11,6 +11,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from .models.user import User
 from .models.product import Product
 from .models.competitor import Competitor
+from .models.store import Store
 from .models.configuration import Configuration
 from .util import load_config, JSONEncoder
 
@@ -30,6 +31,7 @@ APP.json_encoder = JSONEncoder
 user_model = User()
 product_model = Product()
 competitor_model = Competitor()
+store_model = Store()
 configuration_model = Configuration()
 
 
@@ -222,6 +224,16 @@ def remove_competitor():
     return jsonify({
         'success': success,
         'message': message
+    })
+
+
+@APP.route('/store/get', methods=['POST'])
+@jwt_required
+def get_all_store_names():
+    data = store_model.find({})
+    return jsonify({
+        'success': True,
+        'data': data
     })
 
 

@@ -101,7 +101,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
         setCodeState("error");
       }
 
-      if (validateURL(currentProduct.url)) {
+      if (validateSkroutzURL(currentProduct.url)) {
         seturlState("success");
       } else {
         seturlState("error");
@@ -156,7 +156,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
     }
   }, [currentProduct]);
 
-  const validateURL = value => {
+  const validateSkroutzURL = value => {
     return /https:\/\/www.skroutz.gr\/.*\.html/g.test(value);
   }
 
@@ -378,7 +378,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                     }}
                     inputProps={{
                       onChange: (event) => {
-                        if (validateURL(event.target.value)) {
+                        if (validateSkroutzURL(event.target.value)) {
                           seturlState("success");
                         } else {
                           seturlState("error");
@@ -476,7 +476,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       </MenuItem>
                       <MenuItem
                         classes={{
-                          root: classes.slectMenuItem,
+                          root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
                         value="0"
@@ -485,7 +485,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       </MenuItem>
                       <MenuItem
                         classes={{
-                          root: classes.slectMenuItem,
+                          root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
                         value="1"
@@ -494,7 +494,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       </MenuItem>
                       <MenuItem
                         classes={{
-                          root: classes.slectMenuItem,
+                          root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
                         value="2"
@@ -541,7 +541,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       </MenuItem>
                       <MenuItem
                         classes={{
-                          root: classes.slectMenuItem,
+                          root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
                         value="0"

@@ -72,6 +72,10 @@ const updateCompetitor = (competitorId, competitor) => {
   });
 }
 
+const getAllStoreNames = () => {
+  return api.post('store/get');
+}
+
 const getProductCount = () => {
   return api.post('product/get_count');
 }
@@ -103,6 +107,7 @@ export default {
   getCompetitor,
   removeCompetitor,
   updateCompetitor,
+  getAllStoreNames,
   getConfig,
   updateConfig,
   importMassProducts,
