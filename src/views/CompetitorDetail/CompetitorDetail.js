@@ -237,33 +237,19 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
                       >
                         Store names
                       </MenuItem>
-                      <MenuItem
-                        classes={{
-                          root: classes.selectMenuItem,
-                          selected: classes.selectMenuItemSelectedMultiple
-                        }}
-                        value="0"
-                      >
-                        Store 1
-                      </MenuItem>
-                      <MenuItem
-                        classes={{
-                          root: classes.selectMenuItem,
-                          selected: classes.selectMenuItemSelectedMultiple
-                        }}
-                        value="1"
-                      >
-                        Store 2
-                      </MenuItem>
-                      <MenuItem
-                        classes={{
-                          root: classes.selectMenuItem,
-                          selected: classes.selectMenuItemSelectedMultiple
-                        }}
-                        value="2"
-                      >
-                        Store 3
-                      </MenuItem>
+                      {
+                        allStoreNames.map(store => (
+                          <MenuItem
+                            classes={{
+                              root: classes.selectMenuItem,
+                              selected: classes.selectMenuItemSelectedMultiple
+                            }}
+                            value={store._id}
+                          >
+                            {store.name}
+                          </MenuItem>
+                        ))
+                      }
                     </Select>
                   </FormControl>
                 </GridItem>

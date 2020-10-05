@@ -17,7 +17,7 @@ import CardIcon from "components/Card/CardIcon.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import DataTable from "components/DataTable/DataTable";
-import { getProduct, removeProduct } from "actions/ProductActions";
+import { getProduct, removeProduct, getAllProducts } from "actions/ProductActions";
 import {
   grayColor,
 } from "assets/jss/material-dashboard-react.js";
@@ -48,7 +48,7 @@ const styles = {
 };
 const useStyles = makeStyles(styles);
 
-function Products({dispatch, tableData}) {
+function Products({dispatch, tableData, allProducts}) {
   const classes = useStyles();
   const [filterErrored, setFilterErrored] = React.useState(false);
   const [filterUpdated, setFilterUpdated] = React.useState(false);
@@ -56,19 +56,26 @@ function Products({dispatch, tableData}) {
   const [countUpdated, setCountUpdated] = React.useState(0);
 
   React.useEffect(() => {
+    dispatch(getAllProducts());
     dispatch(getProduct());
   }, []);
 
   React.useEffect(() => {
-    for (const product of tableData) {
+    let erroredCount = 0;
+    let updatedCount = 0;
+
+    for (const product of allProducts) {
       if (product.is_errored) {
-        setCountErrored(countErrored++);
+        erroredCount ++;
       }
       if (product.is_updated) {
-        setCountUpdated(countUpdated++);
+        updatedCount ++;    
       }
     }
-  }, [tableData]);
+
+    setCountErrored(erroredCount);
+    setCountUpdated(updatedCount);
+  }, [allProducts]);
 
   const tableColumns = [
     {title: 'Code', field: 'code', width: 20},
@@ -132,7 +139,7 @@ function Products({dispatch, tableData}) {
             </CardIcon>
             <p className={classes.cardCategory}>Products Updated</p>
             <h3 className={classes.cardTitle}>
-              {countUpdated} products/{tableData.length === 0 ? 0 : countUpdated/tableData.length}% of products
+              {countUpdated} products/{allProducts.length === 0 ? 0 : (countUpdated * 100 / allProducts.length).toFixed(1)}% of products
             </h3>
           </CardHeader>
         </Card>
@@ -145,7 +152,7 @@ function Products({dispatch, tableData}) {
             </CardIcon>
             <p className={classes.cardCategory}>Products Errored</p>
             <h3 className={classes.cardTitle}>
-              {countErrored} products/{tableData.length === 0 ? 0 : countErrored/tableData.length}% of products
+              {countErrored} products/{allProducts.length === 0 ? 0 : (countErrored * 100 / allProducts.length).toFixed(1)}% of products
             </h3>
           </CardHeader>
         </Card>
@@ -209,9 +216,10 @@ function Products({dispatch, tableData}) {
 }
 
 const mapStateToProps = ({ product }) => {
-  const { tableData } = product;
+  const { tableData, allProducts } = product;
   return {
     tableData,
+    allProducts
   }
 }
 

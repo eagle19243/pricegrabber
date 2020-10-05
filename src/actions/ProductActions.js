@@ -2,7 +2,7 @@ import { push } from "connected-react-router";
 import API from "api/API";
 import { startLoading, stopLoading, showAlert } from "actions/AppActions"
 import {
-  PRODUCT_GET_SUCCESS, PRODUCT_REMOVE_SUCCESS, GET_PRODUCT_COUNT,
+  PRODUCT_GET_SUCCESS, PRODUCT_REMOVE_SUCCESS, GET_PRODUCT_COUNT, PRODUCT_GET_ALL_SUCCESS,
 } from "types";
 
 export function addProduct(product) {
@@ -18,6 +18,21 @@ export function addProduct(product) {
         dispatch(showAlert(response.data.message, 'success'));
         dispatch(push('/app/products'));
       }
+    }).catch(error => {
+      console.log(error.message);
+    });
+  }
+}
+
+export function getAllProducts() {
+  return (dispatch) => {
+    API.getProduct().then(response => {
+      dispatch({
+        type: PRODUCT_GET_ALL_SUCCESS,
+        payload: {
+          allProducts: response.data.data
+        }
+      });
     }).catch(error => {
       console.log(error.message);
     });

@@ -93,7 +93,7 @@ class Scraper(Task):
                                 product['competitors'][shop][today] = price
                                 keys = product['competitors'][shop].keys()
                                 if len(keys) > 7:
-                                    product['competitors'][shop].pop(keys[0])
+                                    product['competitors'][shop].pop(keys[-1])
                             else:
                                 product['competitors'][shop] = {}
                                 product['competitors'][shop][today] = price
