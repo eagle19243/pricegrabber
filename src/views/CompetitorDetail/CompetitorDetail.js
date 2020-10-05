@@ -72,7 +72,7 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
   const [shippingPaymentInfo, setShippingPaymentInfo] = React.useState("");
   const [skroutzUrl, setSkroutzUrl] = React.useState("");
   const [skroutzUrlState, setSkroutzUrlState] = React.useState("");
-  console.log('allStoreNames', allStoreNames);
+  
   React.useEffect(() => {
     dispatch(getCompetitor(competitorId));
     dispatch(getAllStoreNames());
@@ -238,13 +238,18 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
                         Store names
                       </MenuItem>
                       {
-                        allStoreNames.map(store => (
+                        allStoreNames
+                        .sort((a, b) => 
+                          (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+                        )
+                        .map(store => (
                           <MenuItem
                             classes={{
                               root: classes.selectMenuItem,
                               selected: classes.selectMenuItemSelectedMultiple
                             }}
                             value={store._id}
+                            key={store._id}
                           >
                             {store.name}
                           </MenuItem>
