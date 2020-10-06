@@ -4,6 +4,7 @@ import os
 import datetime
 import csv
 import codecs
+from datetime import date
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask import Flask, request, jsonify, send_from_directory
@@ -204,11 +205,44 @@ def update_competitor():
 def get_competitor():
     data = request.get_json()
     id = data['competitorId']
+    products = product_model.find({})
 
     if id:
-        data = competitor_model.find_by_id(id)
+        competitor = competitor_model.find_by_id(id)
+        data = competitor
+        data['num_products'] = {}
+        product_counts = {}
+
+        for store_name in competitor['store_names']:
+            for product in products:
+                if 'competitors' not in product:
+                    continue
+                if store_name not in product['competitors']:
+                    continue
+                for key in product['competitors'][store_name].keys():
+                    if key in product_counts.keys():
+                        product_counts[key] = product_counts[key] + 1
+                    else:
+                        product_counts[key] = 0
+        for key in sorted(product_counts)[-7:]:
+            data['num_products'][key] = product_counts[key]
+
     else:
-        data = competitor_model.find({})
+        competitors = competitor_model.find({})
+        data = []
+        for competitor in competitors:
+            competitor['num_products'] = 0
+
+            for store_name in competitor['store_names']:
+                for product in products:
+                    if 'competitors' not in product:
+                        continue
+                    if store_name not in product['competitors']:
+                        continue
+                    if str(date.today()) in product['competitors'][store_name].keys():
+                        competitor['num_products'] = competitor['num_products'] + 1
+            data.append(competitor)
+        
     return jsonify({
         'success': True,
         'data': data

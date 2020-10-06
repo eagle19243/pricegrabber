@@ -79,6 +79,7 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
   }, []);  
 
   React.useEffect(() => {
+    console.log(currentCompetitor);
     if (currentCompetitor && window.location.pathname !== '/app/products/new') {
       setUrl(currentCompetitor.url);
       setStoreNames(currentCompetitor.store_names);
@@ -248,7 +249,7 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
                               root: classes.selectMenuItem,
                               selected: classes.selectMenuItemSelectedMultiple
                             }}
-                            value={store._id}
+                            value={store.name}
                             key={store._id}
                           >
                             {store.name}
@@ -325,7 +326,11 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
                     }}
                     inputProps={{
                       multiline: true,
-                      rows: 3
+                      rows: 3, 
+                      onChange: (event) => {
+                        setShippingPaymentInfo(event.target.value)
+                      },
+                      value: shippingPaymentInfo,
                     }}
                   />
                 </GridItem>
