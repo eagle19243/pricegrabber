@@ -106,6 +106,7 @@ def auth_user():
 @jwt_required
 def add_product():
     data = request.get_json()
+    data['is_errored'] = True
     product_id = product_model.create(data)
     return jsonify({
         'success': True,
@@ -327,7 +328,8 @@ def import_mass_products():
                     'code': code,
                     'url': url,
                     'cost': cost,
-                    'profit': profit
+                    'profit': profit,
+                    'is_errored': True
                 })
         except ValueError:
             return jsonify({
