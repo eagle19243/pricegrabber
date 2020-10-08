@@ -84,7 +84,11 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
   const [reviewRating, setReviewRating] = React.useState(0);
   const [tableHead, setTableHead] = React.useState([]);
   const [tableData, setTableData] = React.useState([]);
-  const [chartData, setChartData] = React.useState({})
+  const [chartData, setChartData] = React.useState({});
+  const [type, setType] = React.useState(0);
+  const [position, setPosition] = React.useState(1);
+  const [amount, setAmount] = React.useState(0);
+  const [percent, setPercent] = React.useState(0);
 
   React.useEffect(() => {
     dispatch(getProduct(productId));
@@ -485,7 +489,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
-                        value="0"
+                        value={0}
                       >
                         No touch
                       </MenuItem>
@@ -494,7 +498,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
-                        value="1"
+                        value={1}
                       >
                         Set price (-+)percent/exact amount of min. Price
                       </MenuItem>
@@ -503,7 +507,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           root: classes.selectMenuItem,
                           selected: classes.selectMenuItemSelected
                         }}
-                        value="2"
+                        value={2}
                       >
                         Set price according to position
                       </MenuItem>
@@ -574,6 +578,120 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                       }
                     </Select>
                   </FormControl>
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={3} md={2}>
+                  { rule == 1 && 
+                    <FormControl 
+                      fullWidth
+                      className={classes.selectFormControl}
+                    >
+                      <InputLabel
+                        htmlFor="select-type"
+                        className={classes.selectLabel}
+                      >
+                        Choose a Type
+                      </InputLabel>
+                      <Select 
+                        MenuProps={{
+                          className: classes.selectMenu
+                        }}
+                        classes={{
+                          select: classes.select
+                        }}
+                        value={type}
+                        onChange={(event) => {
+                          setType(event.target.value)
+                        }}
+                        inputProps={{
+                          name: "selectType",
+                          id: "select-type"
+                        }}
+                      >
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem
+                          }}
+                          value={0}
+                        >
+                          Choose a Type
+                        </MenuItem>
+                        <MenuItem
+                          classes={{
+                            root: classes.selectMenuItem,
+                            selected: classes.selectMenuItemSelected
+                          }}
+                          value={1}
+                        >
+                          Amount
+                        </MenuItem>
+                        <MenuItem
+                          classes={{
+                            root: classes.selectMenuItem,
+                            selected: classes.selectMenuItemSelected
+                          }}
+                          value={2}
+                        >
+                          Percent
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  }
+                  { rule == 2 &&
+                    <CustomInput
+                      labelText="Position"
+                      id="position"
+                      align="right"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      inputProps={{
+                        onChange: (event) => {
+                          setPosition(event.target.value);
+                        },
+                        value: position,
+                        type: 'number',
+                      }}
+                    />
+                  }
+                </GridItem>
+                <GridItem xs={12} sm={3} md={2}>
+                  { rule == 1 && type == 1 &&
+                    <CustomInput
+                      labelText="Amount"
+                      id="amount"
+                      align="right"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      inputProps={{
+                        onChange: (event) => {
+                          setAmount(event.target.value);
+                        },
+                        value: amount,
+                        type: 'number',
+                      }}
+                    />
+                  }
+                  { rule == 1 && type == 2 &&
+                    <CustomInput
+                      labelText="Percent"
+                      id="percent"
+                      align="right"
+                      formControlProps={{
+                        fullWidth: true
+                      }}
+                      inputProps={{
+                        onChange: (event) => {
+                          setPercent(event.target.value);
+                        },
+                        value: percent,
+                        type: 'number',
+                      }}
+                    />
+                  }
                 </GridItem>
               </GridContainer>
             </CardBody>
