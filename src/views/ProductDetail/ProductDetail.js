@@ -24,6 +24,7 @@ import CardIcon from "components/Card/CardIcon.js";
 import Table from "components/Table/Table.js";
 
 import { addProduct, updateProduct, getProduct } from "actions/ProductActions";
+import { getAllStoreNames } from "actions/CompetitorActions";
 
 import {
   grayColor,
@@ -64,7 +65,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-function ProductDetail({ dispatch, match, currentProduct }) {
+function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
   const classes = useStyles();
   const productId = match.params.id;
   const [code, setCode] = React.useState("");
@@ -87,6 +88,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
 
   React.useEffect(() => {
     dispatch(getProduct(productId));
+    dispatch(getAllStoreNames());
   }, []);  
   React.useEffect(() => {
     if (currentProduct && window.location.pathname !== '/app/products/new') {
@@ -548,6 +550,24 @@ function ProductDetail({ dispatch, match, currentProduct }) {
                       >
                         None
                       </MenuItem>
+                      {
+                        allStoreNames
+                        .sort((a, b) => 
+                          (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+                        )
+                        .map(store => (
+                          <MenuItem
+                            classes={{
+                              root: classes.selectMenuItem,
+                              selected: classes.selectMenuItemSelected
+                            }}
+                            value={store.name}
+                            key={store._id}
+                          >
+                            {store.name}
+                          </MenuItem>
+                        ))
+                      }
                     </Select>
                   </FormControl>
                 </GridItem>
@@ -563,10 +583,12 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   );
 }
 
-const mapStateToProps = ({ product }) => {
+const mapStateToProps = ({ product, competitor }) => {
   const { currentProduct } = product;
+  const { allStoreNames } = competitor
   return {
-    currentProduct: currentProduct,
+    currentProduct,
+    allStoreNames,
   }
 }
 
