@@ -128,19 +128,23 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
       console.log(currentProduct);
       if (currentProduct.competitors && Object.keys(currentProduct.competitors).length > 0) {
         const rowData = [];
-        const columnData = ['Shop'];
+        const columnData = [];
         const competitors = Object.keys(currentProduct.competitors);
         
         for (const competitor of competitors) {
           const data = [competitor];
           for (const date in currentProduct.competitors[competitor]) {
+            if (!columnData.includes(date)) {
+              columnData.push(date);
+            }
             data.push(currentProduct.competitors[competitor][date]);
           }
           rowData.push(data);
         }
 
+        columnData.sort();
         setTableData(rowData);
-        setTableHead(columnData.concat(Object.keys(currentProduct.competitors[competitors[0]])));
+        setTableHead(['Shop'].concat(columnData));
       }
 
       if (currentProduct.price) {
