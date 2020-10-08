@@ -207,11 +207,13 @@ def get_competitor():
     data = request.get_json()
     id = data['competitorId']
     products = product_model.find({})
+    today = str(date.today())
 
     if id:
         competitor = competitor_model.find_by_id(id)
         data = competitor
         data['num_products'] = {}
+        data['positions'] = {}
         product_counts = {}
 
         for store_name in competitor['store_names']:
@@ -220,11 +222,25 @@ def get_competitor():
                     continue
                 if store_name not in product['competitors']:
                     continue
+
+                if today in product['competitors'][store_name]:
+                    prices = []
+                    for key in product['competitors'].keys():
+                        if today in product['competitors'][key]:
+                            prices.append(product['competitors'][key][today])
+                    prices.sort()
+                    position = prices.index(product['competitors'][store_name][today])
+
+                    if str(position) in data['positions']:
+                        data['positions'][str(position)] = data['positions'][str(position)] + 1
+                    else:
+                        data['positions'][str(position)] = 1
+
                 for key in product['competitors'][store_name].keys():
                     if key in product_counts.keys():
                         product_counts[key] = product_counts[key] + 1
                     else:
-                        product_counts[key] = 0
+                        product_counts[key] = 1
         for key in sorted(product_counts)[-7:]:
             data['num_products'][key] = product_counts[key]
     else:
@@ -239,7 +255,7 @@ def get_competitor():
                         continue
                     if store_name not in product['competitors']:
                         continue
-                    if str(date.today()) in product['competitors'][store_name].keys():
+                    if today in product['competitors'][store_name].keys():
                         competitor['num_products'] = competitor['num_products'] + 1
             data.append(competitor)
         

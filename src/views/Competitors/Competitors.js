@@ -55,7 +55,12 @@ function Competitors({dispatch, tableData}) {
   const tableColumns = [
     {title: 'Name', field: 'url', width: 20},
     {title: 'Store names', field: 'store_names'},
-    {title: 'Exclude', field: 'is_excluded', width: 10},
+    {title: 'Exclude', field: 'is_excluded', width: 10, render: data => {
+      if (data === true) {
+        return 'Yes';
+      }
+      return 'No';
+    }},
     {title: 'No.of products', field: 'num_products', width: 10},
   ];
 

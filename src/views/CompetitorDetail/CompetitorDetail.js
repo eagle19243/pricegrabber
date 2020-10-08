@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import ChartistGraph from "react-chartist";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
@@ -72,7 +73,24 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
   const [shippingPaymentInfo, setShippingPaymentInfo] = React.useState("");
   const [skroutzUrl, setSkroutzUrl] = React.useState("");
   const [skroutzUrlState, setSkroutzUrlState] = React.useState("");
+  const [lineChartData, setLineChartData] = React.useState({});
+  const [pieChartData, setPieChartData] = React.useState({});
   
+  const ordinalSuffixOf = i => {
+    const j = i % 10;
+    const k = i % 100;
+    if (j === 1 && k !== 11) {
+      return i + "st";
+    }
+    if (j === 2 && k !== 12) {
+      return i + "nd";
+    }
+    if (j === 3 && k !== 13) {
+      return i + "rd";
+    }
+    return i + "th";
+  }
+
   React.useEffect(() => {
     dispatch(getCompetitor(competitorId));
     dispatch(getAllStoreNames());
@@ -97,6 +115,37 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
         setSkroutzUrlState("success");
       } else {
         setSkroutzUrlState("error");
+      }
+
+      if (currentCompetitor.num_products) {
+        const dates = Object.keys(currentCompetitor.num_products);
+        const series = [[]];
+        for (const date of dates) {
+          series[0].push(currentCompetitor.num_products[date]);
+        }
+
+        setLineChartData({
+          labels: dates,
+          series: series
+        });
+      }
+
+      if (currentCompetitor.positions) {
+        const positions = Object.keys(currentCompetitor.positions);
+        const labels = []
+        const series = [];
+        let total  = 0;
+        for (const position of positions) {
+          total += currentCompetitor.positions[position];
+        }
+        for (const position of positions) {
+          labels.push(`${(currentCompetitor.positions[position] * 100 / total).toFixed(1)}% ${ordinalSuffixOf(Number(position) + 1)} position`);
+          series.push(currentCompetitor.positions[position]);
+        }
+        setPieChartData({
+          labels,
+          series,
+        });
       }
     }
   }, [currentCompetitor]);
@@ -150,6 +199,91 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
   return (
     <div>
       <GridContainer>
+        <GridItem xs={12}>
+          <Card chart>
+            <CardHeader color="info">
+              <ChartistGraph
+                className="ct-chart"
+                data={pieChartData}
+                type="Pie"
+                options={{
+                  height: "300px",
+                  align: "center",
+                }}
+                responsiveOptions={[[
+                  'screen and (min-width: 1024px)', {
+                    labelOffset: 80,
+                    chartPadding: 20
+                  }
+                ]]}
+                style={{
+                  display: "flex",
+                  justifyContent: "center"
+                }}
+              />
+            </CardHeader>
+          </Card>
+        </GridItem>
+        <GridItem xs={12}>
+          <Card chart>
+            <CardHeader color="success">
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={6} lg={4}>
+                  <ChartistGraph
+                    className="ct-chart"
+                    data={lineChartData}
+                    type="Line"
+                    options={{
+                      lineSmooth: window.Chartist.Interpolation.cardinal({
+                        tension: 0
+                      }),
+                      low: 0,
+                      high: 2000, 
+                      chartPadding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                      },
+                      plugins: [
+                        window.Chartist.plugins.tooltip()
+                      ],
+                    }}
+                    listener={{
+                      draw: function(data) {
+                        if (data.type === "line" || data.type === "area") {
+                          data.element.animate({
+                            d: {
+                              begin: 600,
+                              dur: 700,
+                              from: data.path
+                                .clone()
+                                .scale(1, 0)
+                                .translate(0, data.chartRect.height())
+                                .stringify(),
+                              to: data.path.clone().stringify(),
+                              easing: window.Chartist.Svg.Easing.easeOutQuint
+                            }
+                          });
+                        } else if (data.type === "point") {
+                          data.element.animate({
+                            opacity: {
+                              begin: (data.index + 1) * 80,
+                              dur: 500,
+                              from: 0,
+                              to: 1,
+                              easing: "ease"
+                            }
+                          });
+                        }
+                      }
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+            </CardHeader>
+          </Card>
+        </GridItem>
         <GridItem xs={12}>
           <Card>
             <CardBody>
