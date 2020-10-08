@@ -47,6 +47,8 @@ export default function DataTable(props) {
     tableHeaderColor, 
     pageSize,
     pageSizeOptions,
+    initialPage,
+    searchText, 
     ...rest 
   } = props;
   return (
@@ -62,6 +64,8 @@ export default function DataTable(props) {
           actionsColumnIndex: -1,
           pageSizeOptions,
           pageSize,
+          initialPage: initialPage || 0,
+          searchText: searchText || '',
         }} 
         {...rest}
       />

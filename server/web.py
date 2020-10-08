@@ -226,7 +226,6 @@ def get_competitor():
                         product_counts[key] = 0
         for key in sorted(product_counts)[-7:]:
             data['num_products'][key] = product_counts[key]
-
     else:
         competitors = competitor_model.find({})
         data = []

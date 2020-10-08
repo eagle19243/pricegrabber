@@ -54,10 +54,32 @@ function Products({dispatch, tableData, allProducts}) {
   const [filterUpdated, setFilterUpdated] = React.useState(false);
   const [countErrored, setCountErrored] = React.useState(0);
   const [countUpdated, setCountUpdated] = React.useState(0);
+  const [products, setProducts] =  React.useState([]);
+
+  const tableColumns = [
+    {title: 'Code', field: 'code', width: 20},
+    {title: 'URL', field: 'url'},
+    {title: 'Cost', field: 'cost', width: 10},
+    {title: 'Profit', field: 'profit', width: 10},
+    {title: 'Last min price', field: 'price', width: 20, render: data => {
+      if (!data.price) return '';
+
+      const keys = Object.keys(data.price);
+      return keys.length > 0 ? data.price[keys[keys.length - 1]] : '';
+    }},
+    {title: 'Last updated date', field: 'updated', width: 20, render: data => {
+      return data.updated ? moment.utc(data.updated).local().format('MM/DD/YYYY HH:mm:ss') : '';
+    }},
+    {title: 'Error', field: 'error', width: 10},
+  ];
 
   React.useEffect(() => {
+    const errored = localStorage.getItem('product_filter_errored') === 'true';
+    const updated = localStorage.getItem('product_filter_updated') === 'true';
+    setFilterErrored(errored);
+    setFilterUpdated(updated);
     dispatch(getAllProducts());
-    dispatch(getProduct());
+    dispatch(getProduct(null, errored, updated));
   }, []);
 
   React.useEffect(() => {
@@ -77,22 +99,32 @@ function Products({dispatch, tableData, allProducts}) {
     setCountUpdated(updatedCount);
   }, [allProducts]);
 
-  const tableColumns = [
-    {title: 'Code', field: 'code', width: 20},
-    {title: 'URL', field: 'url'},
-    {title: 'Cost', field: 'cost', width: 10},
-    {title: 'Profit', field: 'profit', width: 10},
-    {title: 'Last min price', field: 'price', width: 20, render: data => {
-      if (!data.price) return '';
+  React.useEffect(() => {
+    const orderColumn = localStorage.getItem('product_order_column');
+    const orderDirection = localStorage.getItem('product_order_direction');
+    const field = tableColumns[Number(orderColumn)].field;
 
-      const keys = Object.keys(data.price);
-      return keys.length > 0 ? data.price[keys[keys.length - 1]] : '';
-    }},
-    {title: 'Last updated date', field: 'updated', width: 20, render: data => {
-      return data.updated ? moment.utc(data.updated).local().format('MM/DD/YYYY HH:mm:ss') : '';
-    }},
-    {title: 'Error', field: 'error', width: 10},
-  ];
+    tableData.sort((a, b) => {
+      if (orderDirection  ==  'asc') {
+        if (a[field] > b[field]) {
+          return 1;
+        }
+        if (a[field] < b[field]) {
+          return -1;
+        }
+        return 0;
+      } else {
+        if (a[field] < b[field]) {
+          return 1;
+        }
+        if (a[field] > b[field]) {
+          return -1;
+        }
+        return 0;
+      }
+    });
+    setProducts(tableData);
+  }, [tableData]);
 
   const onAddProduct = (event) => {
     dispatch(push('/app/products/new'));
@@ -107,6 +139,8 @@ function Products({dispatch, tableData, allProducts}) {
   };
 
   const doFilter = () => {
+    localStorage.setItem('product_filter_errored', filterErrored);
+    localStorage.setItem('product_filter_updated', filterUpdated);
     dispatch(getProduct(null, filterErrored, filterUpdated));
   };
 
@@ -197,15 +231,29 @@ function Products({dispatch, tableData, allProducts}) {
                 </Button>
               </GridItem>
               <GridItem xs={12}>
-                <DataTable 
-                  title={""} 
-                  tableHeaderColor="primary" 
-                  tableColumns={tableColumns} 
-                  tableData={tableData} 
-                  pageSize={50} 
-                  pageSizeOptions={[20, 50, 100, 200]} 
-                  actions={actions} 
-                />
+                { products.length  > 0 &&
+                  <DataTable 
+                    title={""} 
+                    tableHeaderColor="primary" 
+                    tableColumns={tableColumns} 
+                    tableData={products} 
+                    initialPage={Number(localStorage.getItem('product_page_number'))}
+                    searchText={localStorage.getItem('product_search_query')}
+                    pageSize={50} 
+                    pageSizeOptions={[20, 50, 100, 200]}  
+                    actions={actions} 
+                    onChangePage={(pageNumber)=>{
+                      localStorage.setItem('product_page_number', pageNumber);
+                    }} 
+                    onSearchChange={(searchQuery)=>{
+                      localStorage.setItem('product_search_query', searchQuery);
+                    }}
+                    onOrderChange={(orderColumn, orderDirection)=>{
+                      localStorage.setItem('product_order_column', orderColumn);
+                      localStorage.setItem('product_order_direction', orderDirection);
+                    }}
+                  />
+                }
               </GridItem>
             </GridContainer>
           </CardBody>
