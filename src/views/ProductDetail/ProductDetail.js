@@ -61,6 +61,13 @@ const styles = {
   cardFooter: {
     justifyContent: "flex-end"
   },
+  roundButton: {
+    width: '30px',
+    height: '30px',
+    marginTop: '27px',
+    padding: '15px',
+    fontSize: '24px',
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -77,7 +84,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
   const [profit, setProfit] = React.useState("");
   const [profitState, setProfitState] = React.useState("");
   const [rule, setRule] = React.useState(0);
-  const [competitorExclude, setCompetitorExclude] = React.useState(0);
+  const [competitorExclude, setCompetitorExclude] = React.useState([]);
   const [name, setName] = React.useState("");
   const [lastTimeUpdated, setLastTimeUpdated] = React.useState(null)
   const [reviewCount, setReviewCount] = React.useState(0);
@@ -163,6 +170,26 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
           series: series
         });
       }
+
+      if (currentProduct.competitors_excluded) {
+        setCompetitorExclude(currentProduct.competitors_excluded);
+      }
+
+      if (currentProduct.rule) {
+        const ruleData = currentProduct.rule;
+        setRule(ruleData.type);
+
+        if (ruleData.type === 1) {
+          setType(ruleData.data.type);
+          if (ruleData.data.type === 1) {
+            setAmount(ruleData.data.value);
+          } else {
+            setPercent(ruleData.data.value);
+          }
+        } else if (ruleData.type === 2) {
+          setPosition(ruleData.data);
+        }
+      }
     }
   }, [currentProduct]);
 
@@ -199,19 +226,36 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
     }
 
     if (codeState === "success" && urlState === "success" && costState === "success" && profitState === "success") {
+      /**
+       * ruleData = {
+       *    type: number // 0: No touch, 1: set price percent/amount, 2: set price according to position
+       *    data: number or object = {type: number, value: number} // type: 1: 'Amount', 2: 'Percent', value: value
+       * }
+       */
+      const ruleData = { type: rule};
+      if (rule === 1) {
+        ruleData.data = { type: type, value: type === 1 ? amount : percent };
+      } else if (rule === 2) {
+        ruleData.data = position;
+      }
+
       if (productId) {
         dispatch(updateProduct(productId, {
           code: code,
           url: url,
           cost: Number(cost),
-          profit: Number(profit)
+          profit: Number(profit),
+          competitors_excluded: competitorExclude,
+          rule: ruleData,
         }));
       } else {
         dispatch(addProduct({
           code: code,
           url: url,
           cost: Number(cost),
-          profit: Number(profit)
+          profit: Number(profit),
+          competitors_excluded: competitorExclude,
+          rule: ruleData,
         }));
       }
     }
@@ -523,9 +567,10 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                       htmlFor="select-competitor"
                       className={classes.selectLabel}
                     >
-                      Choose a Manufacture
+                      Excluded Competitors
                     </InputLabel>
                     <Select 
+                      multiple
                       MenuProps={{
                         className: classes.selectMenu
                       }}
@@ -547,16 +592,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           root: classes.selectMenuItem
                         }}
                       >
-                        Choose a Manufacture
-                      </MenuItem>
-                      <MenuItem
-                        classes={{
-                          root: classes.selectMenuItem,
-                          selected: classes.selectMenuItemSelected
-                        }}
-                        value="0"
-                      >
-                        None
+                        Excluded Competitors
                       </MenuItem>
                       {
                         allStoreNames
@@ -567,7 +603,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           <MenuItem
                             classes={{
                               root: classes.selectMenuItem,
-                              selected: classes.selectMenuItemSelected
+                              selected: classes.selectMenuItemSelectedMultiple
                             }}
                             value={store.name}
                             key={store._id}
@@ -581,8 +617,8 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                 </GridItem>
               </GridContainer>
               <GridContainer>
-                <GridItem xs={12} sm={3} md={2}>
-                  { rule == 1 && 
+                { rule === 1 &&
+                  <GridItem xs={12} sm={6} md={3}> 
                     <FormControl 
                       fullWidth
                       className={classes.selectFormControl}
@@ -638,27 +674,30 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                         </MenuItem>
                       </Select>
                     </FormControl>
-                  }
-                  { rule == 2 &&
+                  </GridItem>
+                }
+                { rule === 2 &&
+                  <GridItem xs={12} sm={6} style={{ display: 'inline-flex' }}>
                     <CustomInput
                       labelText="Position"
                       id="position"
                       align="right"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
                       inputProps={{
                         onChange: (event) => {
                           setPosition(event.target.value);
                         },
                         value: position,
-                        type: 'number',
+                        style: {width: '150px'}
                       }}
                     />
-                  }
-                </GridItem>
-                <GridItem xs={12} sm={3} md={2}>
-                  { rule == 1 && type == 1 &&
+                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '15px'}} 
+                      onClick={()=>setPosition(position-1 < 1 ? 1 : position-1)}>-</Button>
+                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '5px'}} 
+                      onClick={()=>setPosition(position+1)}>+</Button>
+                  </GridItem>
+                }
+                { rule === 1 && type === 1 &&
+                  <GridItem xs={12} sm={6} md={3} style={{ display: 'inline-flex' }}> 
                     <CustomInput
                       labelText="Amount"
                       id="amount"
@@ -671,11 +710,16 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           setAmount(event.target.value);
                         },
                         value: amount,
-                        type: 'number',
                       }}
                     />
-                  }
-                  { rule == 1 && type == 2 &&
+                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '15px'}} 
+                      onClick={()=>setAmount(amount-1 < 0 ? 0 : amount-1)}>-</Button>
+                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '5px'}} 
+                      onClick={()=>setAmount(amount+1)}>+</Button>
+                  </GridItem>
+                }
+                { rule === 1 && type === 2 &&
+                  <GridItem xs={12} sm={6} md={3} style={{ display: 'inline-flex' }}> 
                     <CustomInput
                       labelText="Percent"
                       id="percent"
@@ -688,11 +732,14 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                           setPercent(event.target.value);
                         },
                         value: percent,
-                        type: 'number',
                       }}
                     />
-                  }
-                </GridItem>
+                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '15px'}} 
+                      onClick={()=>setPercent(percent-1 < 0 ? 0 : percent-1)}>-</Button>
+                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '5px'}} 
+                      onClick={()=>setPercent(percent+1 > 100 ? 100 : percent+1)}>+</Button>
+                  </GridItem>
+                }
               </GridContainer>
             </CardBody>
             <CardFooter>

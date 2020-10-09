@@ -21,14 +21,17 @@ class Product(object):
             'competitors': 'object',
             'is_updated': 'bool',
             'is_errored': 'bool',
-            'error': 'string'
+            'error': 'string',
+            'competitors_excluded': 'array',
+            'rule': 'object'
         }
 
         self.create_required_fields = ['code', 'url', 'cost', 'profit']
 
         # Fields optional for CREATE
         self.create_optional_fields = ['name', 'price', 'review_count', 'review_rating', 'competitors',
-                                       'is_updated', 'is_errored', 'error']
+                                       'is_updated', 'is_errored', 'error', 'competitors_excluded',
+                                       'rule']
 
         # Fields required for UPDATE
         self.update_required_fields = []
@@ -36,7 +39,8 @@ class Product(object):
         # Fields optional for UPDATE
         self.update_optional_fields = ['code', 'url', 'cost', 'profit', 'name', 'price',
                                        'review_count', 'review_rating', 'competitors',
-                                       'is_updated', 'is_errored', 'error']
+                                       'is_updated', 'is_errored', 'error', 'competitors_excluded',
+                                       'rule']
 
     def create(self, product):
         # Validator will throw error if invalid

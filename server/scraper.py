@@ -53,7 +53,7 @@ class Scraper(Task):
         config = self.configuration_model.find_one()
         self.configuration_model.update(config['_id'], {'last_run_time': datetime.now()})
 
-        products = self.product_model.find({})
+        products = self.product_model.find({'code': 'PRD-01-000013196'})
         futures = {}
 
         for product in products:
