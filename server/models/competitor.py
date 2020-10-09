@@ -15,20 +15,28 @@ class Competitor(object):
             'store_names': 'array',
             'is_excluded': 'bool',
             'shipping_payment_info': 'string',
-            'skroutz_url': 'url'
+            'skroutz_url': 'url',
+            'seo_score': 'string',
+            'accessibility_score': 'string',
+            'performance_score': 'string',
+            'best_practices_score': 'string',
+            'pwa': 'bool'
         }
 
         self.create_required_fields = ['url', 'store_names']
 
         # Fields optional for CREATE
-        self.create_optional_fields = ['is_excluded', 'shipping_payment_info', 'skroutz_url', 'logo']
+        self.create_optional_fields = ['is_excluded', 'shipping_payment_info', 'skroutz_url', 'logo',
+                                       'seo_score', 'accessibility_score', 'performance_score'
+                                       'best_practices_score', 'pwa']
 
         # Fields required for UPDATE
         self.update_required_fields = []
 
         # Fields optional for UPDATE
         self.update_optional_fields = ['url', 'store_names', 'is_excluded', 'shipping_payment_info', 'skroutz_url',
-                                       'logo']
+                                       'logo', 'seo_score', 'accessibility_score', 'performance_score',
+                                       'best_practices_score', 'pwa']
 
     def create(self, competitor):
         # Validator will throw error if invalid

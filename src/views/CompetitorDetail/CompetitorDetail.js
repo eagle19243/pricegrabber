@@ -75,6 +75,11 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
   const [skroutzUrlState, setSkroutzUrlState] = React.useState("");
   const [lineChartData, setLineChartData] = React.useState({});
   const [pieChartData, setPieChartData] = React.useState({});
+  const [seoScore, setSeoScore] = React.useState(0);
+  const [accessibilityScore, setAccessibilityScore] = React.useState(0);
+  const [performanceScore, setPerformanceScore] = React.useState(0);
+  const [bestPracticesScore, setBestPracticesScore] = React.useState(0);
+  const [pwa, setPwa] = React.useState(false);
   
   const ordinalSuffixOf = i => {
     const j = i % 10;
@@ -147,6 +152,22 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
           series,
         });
       }
+
+      if (currentCompetitor.seo_score) {
+        setSeoScore(currentCompetitor.seo_score);
+      }
+      if (currentCompetitor.accessibility_score) {
+        setAccessibilityScore(currentCompetitor.accessibility_score);
+      }
+      if (currentCompetitor.performance_score) {
+        setPerformanceScore(currentCompetitor.performance_score);
+      }
+      if (currentCompetitor.best_practices_score) {
+        setBestPracticesScore(currentCompetitor.bestPracticesScore);
+      }
+      if (currentCompetitor.pwa) {
+        setPwa(currentCompetitor.pwa);
+      }
     }
   }, [currentCompetitor]);
 
@@ -183,6 +204,11 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
           is_excluded: isExcluded,
           shipping_payment_info: shippingPaymentInfo,
           skroutz_url: skroutzUrl,
+          seo_score: seoScore,
+          accessibility_score: accessibilityScore,
+          performance_score: performanceScore,
+          best_practices_score: bestPracticesScore,
+          pwa,
         }));
       } else {
         dispatch(addCompetitor({
@@ -191,6 +217,11 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
           is_excluded: isExcluded,
           shipping_payment_info: shippingPaymentInfo,
           skroutz_url: skroutzUrl,
+          seo_score: seoScore,
+          accessibility_score: accessibilityScore,
+          performance_score: performanceScore,
+          best_practices_score: bestPracticesScore,
+          pwa,
         }));
       }
     }
@@ -467,6 +498,120 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
                       value: shippingPaymentInfo,
                     }}
                   />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={6} md={4}>
+                  <CustomInput
+                    labelText="Seo Score"
+                    id="seo_score"
+                    align="right"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        setSeoScore(event.target.value)
+                      },
+                      value: seoScore,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={6} md={4}>
+                  <CustomInput
+                    labelText="Accessibility Score"
+                    id="accessibility_score"
+                    align="right"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        setAccessibilityScore(event.target.value)
+                      },
+                      value: accessibilityScore,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={6} md={4}>
+                  <CustomInput
+                    labelText="Performance Score"
+                    id="performance_score"
+                    align="right"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        setPerformanceScore(event.target.value)
+                      },
+                      value: performanceScore,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={6} md={4}>
+                  <CustomInput
+                    labelText="Best Practices Score"
+                    id="best_practices_score"
+                    align="right"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: (event) => {
+                        setBestPracticesScore(event.target.value)
+                      },
+                      value: bestPracticesScore,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={6} md={4}>
+                  <FormControl 
+                    fullWidth
+                    className={classes.selectFormControl}
+                  >
+                    <InputLabel
+                      htmlFor="pwa"
+                      className={classes.selectLabel}
+                    >
+                      PWA
+                    </InputLabel>
+                    <Select 
+                      MenuProps={{
+                        className: classes.selectMenu
+                      }}
+                      classes={{
+                        select: classes.select
+                      }}
+                      value={pwa}
+                      onChange={(event) => {
+                        setPwa(event.target.value);
+                      }}
+                      inputProps={{
+                        name: "pwa",
+                        id: "pwa"
+                      }}
+                    >
+                      <MenuItem
+                        classes={{
+                          root: classes.selectMenuItem,
+                          selected: classes.selectMenuItemSelected
+                        }}
+                        value={true}
+                      >
+                        Yes
+                      </MenuItem>
+                      <MenuItem
+                        classes={{
+                          root: classes.selectMenuItem,
+                          selected: classes.selectMenuItemSelected
+                        }}
+                        value={false}
+                      >
+                        No
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
                 </GridItem>
               </GridContainer>
             </CardBody>
