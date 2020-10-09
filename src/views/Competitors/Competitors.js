@@ -53,10 +53,18 @@ function Competitors({dispatch, tableData}) {
   }, []);
 
   const tableColumns = [
-    {title: 'Name', field: 'url', width: 20},
-    {title: 'Store names', field: 'store_names'},
+    {title: 'Store URL', field: 'store_names', width: 20, render: data => {
+      return data.url;
+    }},
+    {title: 'Store names', field: 'store_names', render: data => {
+      if (Array.isArray(data.store_names)) {
+        return data.store_names.join(', ');
+      }
+      
+      return data.store_names;
+    }},
     {title: 'Exclude', field: 'is_excluded', width: 10, render: data => {
-      if (data === true) {
+      if (data.is_excluded === true) {
         return 'Yes';
       }
       return 'No';

@@ -15,17 +15,9 @@ export default (state = INITIAL_STATE, action) => {
 
   switch (type)  {
     case COMPETITOR_GET_SUCCESS:
-      let tData = payload.tableData || state.tableData;
-      
-      for (let i = 0; i < tData.length; i++) {
-        if (tData[i].store_names && Array.isArray(tData[i].store_names)) {
-          tData[i].store_names = tData[i].store_names.join(', ');
-        }
-      }
-
       return {
         ...state,
-        tableData: tData,
+        tableData: payload.tableData || state.tableData,
         currentCompetitor: payload.currentCompetitor || state.currentCompetitor,
       };
     case COMPETITOR_REMOVE_SUCCESS:
