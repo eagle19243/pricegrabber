@@ -166,8 +166,18 @@ class Scraper(Task):
                 competitors[competitor_name] = {
                     'price': competitor_price,
                     'url': self.get_store_url(store_redirect_url),
-                    'logo': shops[str(product['shop_id'])]['logo']
+                    'logo': 'https://' + shops[str(product['shop_id'])]['logo'],
+                    'product_id': product_id
                 }
+
+            product_ids = list(data['product_cards'].keys())
+            shipping_payment_data = self.get_shipping_payment(product_ids)
+
+            for competitor_name, data in competitors.items():
+                shipping_payment_info = next(item for item in shipping_payment_data if str(item['id']) == str(data['product_id']))
+                data['shipping_cost'] = self.get_cost(shipping_payment_info['shipping_cost'])
+                data['payment_cost'] = self.get_cost(shipping_payment_info['payment_method_cost'])
+                competitors[competitor_name] = data
 
             return {
                 'name': name,
@@ -251,29 +261,65 @@ class Scraper(Task):
             self.logger.error('Parser error %s', url)
             return ''
 
+    def get_shipping_payment(self, product_ids):
+        url = 'https://www.skroutz.gr/personalization/product_prices.json'
+        script = 'const url = "%s";' % url + 'const product_ids = [%s];' % ','.join(product_ids) + '''
+            function getData(url, product_ids) {
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {"product_ids": product_ids},
+                        success: (response) => {
+                            resolve(response);
+                        },
+                        error: (xhr)  => {
+                            resolve([]);
+                        }
+                    });
+                });
+            }
+            const response = await getData(url, product_ids);
+            return response;
+        '''
+        try:
+            data = self.driver.execute_script(script)
+            return data
+        except ProtocolError:
+            self.logger.error('Protocol error %s', url)
+            return []
+
+    def get_cost(self, str_cost):
+        str_cost = str_cost.replace(',', '.')
+        regex = r'\d+\.\d+'
+        matches = re.search(regex, str_cost)
+
+        if matches:
+            return float(matches.group())
+        return 0
+
     def get_content(self, url):
         try:
             script = 'const url = "%s";' % url + '''
-                        function getContent(url) {
-                            return new Promise((resolve) => {
-                                const xhr = new XMLHttpRequest();
-                                xhr.open('GET', url, true);
-                                xhr.onreadystatechange = function() {
-                                    if (this.readyState === XMLHttpRequest.DONE) {
-                                        console.log(this.status);
-                                        if (this.status === 200) {
-                                            resolve(xhr.responseText)
-                                        } else {
-                                            resolve(null);
-                                        }
-                                    } 
+                function getContent(url) {
+                    return new Promise((resolve) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', url, true);
+                        xhr.onreadystatechange = function() {
+                            if (this.readyState === XMLHttpRequest.DONE) {
+                                if (this.status === 200) {
+                                    resolve(xhr.responseText)
+                                } else {
+                                    resolve(null);
                                 }
-                                xhr.send();
-                            })
+                            } 
                         }
-                        const content = await getContent(url);
-                        return content;
-                    '''
+                        xhr.send();
+                    })
+                }
+                const content = await getContent(url);
+                return content;
+            '''
             content = self.driver.execute_script(script)
             return content
         except ProtocolError:
