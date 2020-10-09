@@ -11,27 +11,45 @@ class Competitor(object):
 
         self.fields = {
             'url': 'string',
+            'logo': 'string',
             'store_names': 'array',
             'is_excluded': 'bool',
             'shipping_payment_info': 'string',
             'skroutz_url': 'url'
         }
 
-        self.create_required_fields = ['url', 'store_names', 'is_excluded', 'shipping_payment_info', 'skroutz_url']
+        self.create_required_fields = ['url', 'store_names']
 
         # Fields optional for CREATE
-        self.create_optional_fields = []
+        self.create_optional_fields = ['is_excluded', 'shipping_payment_info', 'skroutz_url', 'logo']
 
         # Fields required for UPDATE
         self.update_required_fields = []
 
         # Fields optional for UPDATE
-        self.update_optional_fields = ['url', 'store_names', 'is_excluded', 'shipping_payment_info', 'skroutz_url']
+        self.update_optional_fields = ['url', 'store_names', 'is_excluded', 'shipping_payment_info', 'skroutz_url',
+                                       'logo']
 
     def create(self, competitor):
         # Validator will throw error if invalid
         self.validator.validate(competitor, self.fields, self.create_required_fields, self.create_optional_fields)
         res = self.db.insert(competitor, self.collection_name)
+        return res
+
+    def create_if_not_exist(self, name, url, logo):
+        res = self.db.find_one({'store_names': name}, self.collection_name)
+
+        if not res:
+            competitor = {
+                'store_names': [name],
+                'url': url,
+                'logo': logo,
+                'is_excluded': False
+            }
+            # Validator will throw error if invalid
+            self.validator.validate(competitor, self.fields, self.create_required_fields, self.create_optional_fields)
+            res = self.db.insert(competitor, self.collection_name)
+
         return res
 
     def find(self, competitor):  # find all

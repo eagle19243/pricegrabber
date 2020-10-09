@@ -16,6 +16,7 @@ from celery.utils.log import get_task_logger
 from .models.product import Product
 from .models.configuration import Configuration
 from .models.store import Store
+from .models.competitor import Competitor
 
 
 class Scraper(Task):
@@ -41,6 +42,7 @@ class Scraper(Task):
         self.pool = ThreadPoolExecutor(max_workers=8)
         self.product_model = Product()
         self.store_model = Store()
+        self.competitor_model = Competitor()
         self.configuration_model = Configuration()
         self.logger = get_task_logger('pricegrabber.scraper')
         self.session = requests.Session()
@@ -88,23 +90,25 @@ class Scraper(Task):
                     product['price'][today] = data['price']
 
                     if 'competitors' in product:
-                        for shop, price in data['competitors'].items():
-                            if shop in product['competitors']:
-                                product['competitors'][shop][today] = price
-                                keys = list(product['competitors'][shop].keys())
+                        for store_name, store in data['competitors'].items():
+                            if store_name in product['competitors']:
+                                product['competitors'][store_name][today] = store['price']
+                                keys = list(product['competitors'][store_name].keys())
                                 keys.sort()
                                 if len(keys) > 7:
-                                    product['competitors'][shop].pop(keys[0])
+                                    product['competitors'][store_name].pop(keys[0])
                             else:
-                                product['competitors'][shop] = {}
-                                product['competitors'][shop][today] = price
-                            self.store_model.create(shop)
+                                product['competitors'][store_name] = {}
+                                product['competitors'][store_name][today] = store['price']
+                            self.store_model.create(store_name)
+                            self.competitor_model.create_if_not_exist(store_name, store['url'], store['logo'])
                     else:
                         product['competitors'] = {}
-                        for shop, price in data['competitors'].items():
-                            product['competitors'][shop] = {}
-                            product['competitors'][shop][today] = price
-                            self.store_model.create(shop)
+                        for store_name, store in data['competitors'].items():
+                            product['competitors'][store_name] = {}
+                            product['competitors'][store_name][today] = store['price']
+                            self.store_model.create(store_name)
+                            self.competitor_model.create_if_not_exist(store_name, store['url'], store['logo'])
                     self.logger.info('updated %s', product['url'])
                 else:
                     product['is_errored'] = data['is_errored']
@@ -158,7 +162,12 @@ class Scraper(Task):
             for product_id, product in data['product_cards'].items():
                 competitor_name = shops[str(product['shop_id'])]['name']
                 competitor_price = product['raw_price']
-                competitors[competitor_name] = competitor_price
+                store_redirect_url = 'https://www.skroutz.gr/products/show/' + product_id
+                competitors[competitor_name] = {
+                    'price': competitor_price,
+                    'url': self.get_store_url(store_redirect_url),
+                    'logo': shops[str(product['shop_id'])]['logo']
+                }
 
             return {
                 'name': name,
@@ -214,6 +223,33 @@ class Scraper(Task):
 
         self.bypass_started = False
         self.logger.info('Bypassed %s', page_url)
+
+    def get_store_url(self, url):
+        content = self.get_content(url)
+
+        if not content:
+            if not self.bypass_started:
+                self.bypass(url)
+                content = self.get_content(url)
+                if not content:
+                    return ''
+            else:
+                return ''
+        try:
+            tree = html.fromstring(content)
+            meta_content = tree.xpath('//meta[@http-equiv="refresh"]/@content')[0]
+            regex = r'(http|https):\/\/(?:[\w-]+\.)+[\w-]+\/'
+            matches = re.search(regex, meta_content)
+            if matches:
+                return matches.group()
+            else:
+                return ''
+        except IndexError:
+            self.logger.error('Index error %s', url)
+            return ''
+        except ParserError:
+            self.logger.error('Parser error %s', url)
+            return ''
 
     def get_content(self, url):
         try:
