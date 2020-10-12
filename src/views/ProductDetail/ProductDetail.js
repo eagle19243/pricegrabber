@@ -24,7 +24,6 @@ import CardIcon from "components/Card/CardIcon.js";
 import Table from "components/Table/Table.js";
 
 import { addProduct, updateProduct, getProduct } from "actions/ProductActions";
-import { getAllStoreNames } from "actions/CompetitorActions";
 
 import {
   grayColor,
@@ -72,7 +71,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
+function ProductDetail({ dispatch, match, currentProduct }) {
   const classes = useStyles();
   const productId = match.params.id;
   const [code, setCode] = React.useState("");
@@ -96,10 +95,11 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
   const [position, setPosition] = React.useState(1);
   const [amount, setAmount] = React.useState(0);
   const [percent, setPercent] = React.useState(0);
+  const [operator, setOperator] = React.useState("+");
+  const [storeNames, setStoreNames] = React.useState([]);
 
   React.useEffect(() => {
     dispatch(getProduct(productId));
-    dispatch(getAllStoreNames());
   }, []);  
   React.useEffect(() => {
     if (currentProduct && window.location.pathname !== '/app/products/new') {
@@ -156,6 +156,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
         columnData.sort();
         setTableData(rowData);
         setTableHead(['Shop'].concat(columnData));
+        setStoreNames(competitors);
       }
 
       if (currentProduct.price) {
@@ -181,6 +182,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
 
         if (ruleData.type === 1) {
           setType(ruleData.data.type);
+          setOperator(ruleData.data.operator);
           if (ruleData.data.type === 1) {
             setAmount(ruleData.data.value);
           } else {
@@ -234,7 +236,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
        */
       const ruleData = { type: rule};
       if (rule === 1) {
-        ruleData.data = { type: type, value: type === 1 ? amount : percent };
+        ruleData.data = { type: type, value: type === 1 ? amount : percent, operator:  operator };
       } else if (rule === 2) {
         ruleData.data = position;
       }
@@ -595,9 +597,9 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                         Excluded Competitors
                       </MenuItem>
                       {
-                        allStoreNames
+                        storeNames
                         .sort((a, b) => 
-                          (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+                          (a > b) ? 1 : ((b > a) ? -1 : 0)
                         )
                         .map(store => (
                           <MenuItem
@@ -605,10 +607,10 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                               root: classes.selectMenuItem,
                               selected: classes.selectMenuItemSelectedMultiple
                             }}
-                            value={store.name}
-                            key={store._id}
+                            value={store}
+                            key={store}
                           >
-                            {store.name}
+                            {store}
                           </MenuItem>
                         ))
                       }
@@ -618,7 +620,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
               </GridContainer>
               <GridContainer>
                 { rule === 1 &&
-                  <GridItem xs={12} sm={6} md={3}> 
+                  <GridItem xs={12} sm={4} md={3}> 
                     <FormControl 
                       fullWidth
                       className={classes.selectFormControl}
@@ -677,7 +679,7 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                   </GridItem>
                 }
                 { rule === 2 &&
-                  <GridItem xs={12} sm={6} style={{ display: 'inline-flex' }}>
+                  <GridItem xs={12} sm={4}>
                     <CustomInput
                       labelText="Position"
                       id="position"
@@ -690,54 +692,146 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
                         style: {width: '150px'}
                       }}
                     />
-                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '15px'}} 
-                      onClick={()=>setPosition(position-1 < 1 ? 1 : position-1)}>-</Button>
-                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '5px'}} 
-                      onClick={()=>setPosition(position+1)}>+</Button>
                   </GridItem>
                 }
                 { rule === 1 && type === 1 &&
-                  <GridItem xs={12} sm={6} md={3} style={{ display: 'inline-flex' }}> 
-                    <CustomInput
-                      labelText="Amount"
-                      id="amount"
-                      align="right"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        onChange: (event) => {
-                          setAmount(event.target.value);
-                        },
-                        value: amount,
-                      }}
-                    />
-                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '15px'}} 
-                      onClick={()=>setAmount(amount-1 < 0 ? 0 : amount-1)}>-</Button>
-                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '5px'}} 
-                      onClick={()=>setAmount(amount+1)}>+</Button>
+                  <GridItem xs={12} sm={8} md={6}> 
+                    <GridContainer>
+                      <GridItem xs={6}>
+                        <CustomInput
+                          labelText="Amount"
+                          id="amount"
+                          align="right"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                          inputProps={{
+                            onChange: (event) => {
+                              setAmount(event.target.value);
+                            },
+                            value: amount,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={6}>
+                        <FormControl 
+                          fullWidth
+                          className={classes.selectFormControl}
+                        >
+                          <InputLabel
+                            htmlFor="select-operator"
+                            className={classes.selectLabel}
+                          >
+                            Choose an Operator
+                          </InputLabel>
+                          <Select 
+                            MenuProps={{
+                              className: classes.selectMenu
+                            }}
+                            classes={{
+                              select: classes.select
+                            }}
+                            value={operator}
+                            onChange={(event) => {
+                              setOperator(event.target.value)
+                            }}
+                            inputProps={{
+                              name: "selectOperator",
+                              id: "select-operator"
+                            }}
+                          >
+                            <MenuItem
+                              classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                              }}
+                              value="+"
+                            >
+                              +
+                            </MenuItem>
+                            <MenuItem
+                              classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                              }}
+                              value="-"
+                            >
+                              -
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </GridItem>
+                    </GridContainer>
                   </GridItem>
                 }
                 { rule === 1 && type === 2 &&
-                  <GridItem xs={12} sm={6} md={3} style={{ display: 'inline-flex' }}> 
-                    <CustomInput
-                      labelText="Percent"
-                      id="percent"
-                      align="right"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        onChange: (event) => {
-                          setPercent(event.target.value);
-                        },
-                        value: percent,
-                      }}
-                    />
-                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '15px'}} 
-                      onClick={()=>setPercent(percent-1 < 0 ? 0 : percent-1)}>-</Button>
-                    <Button color='info' className={classes.roundButton} round style={{marginLeft: '5px'}} 
-                      onClick={()=>setPercent(percent+1 > 100 ? 100 : percent+1)}>+</Button>
+                  <GridItem xs={12} sm={8} md={6}> 
+                    <GridContainer>
+                      <GridItem xs={6}>
+                        <CustomInput
+                          labelText="Percent"
+                          id="percent"
+                          align="right"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                          inputProps={{
+                            onChange: (event) => {
+                              setPercent(event.target.value);
+                            },
+                            value: percent,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={6}>
+                        <FormControl 
+                          fullWidth
+                          className={classes.selectFormControl}
+                        >
+                          <InputLabel
+                            htmlFor="select-operator"
+                            className={classes.selectLabel}
+                          >
+                            Choose an Operator
+                          </InputLabel>
+                          <Select 
+                            MenuProps={{
+                              className: classes.selectMenu
+                            }}
+                            classes={{
+                              select: classes.select
+                            }}
+                            value={operator}
+                            onChange={(event) => {
+                              setOperator(event.target.value)
+                            }}
+                            inputProps={{
+                              name: "selectOperator",
+                              id: "select-operator"
+                            }}
+                          >
+                            <MenuItem
+                              classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                              }}
+                              value="+"
+                            >
+                              +
+                            </MenuItem>
+                            <MenuItem
+                              classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                              }}
+                              value="-"
+                            >
+                              -
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </GridItem>
+                    </GridContainer>
                   </GridItem>
                 }
               </GridContainer>
@@ -752,12 +846,10 @@ function ProductDetail({ dispatch, match, currentProduct, allStoreNames }) {
   );
 }
 
-const mapStateToProps = ({ product, competitor }) => {
+const mapStateToProps = ({ product }) => {
   const { currentProduct } = product;
-  const { allStoreNames } = competitor
   return {
     currentProduct,
-    allStoreNames,
   }
 }
 
