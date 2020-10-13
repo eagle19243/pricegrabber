@@ -3,7 +3,7 @@ import requests
 import json
 import base64
 import time
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from lxml import html
 from lxml.etree import ParserError
@@ -83,6 +83,7 @@ class Scraper(Task):
                     product['error'] = ''
                     product['is_updated'] = True
                     today = str(date.today())
+                    now = datetime.now().strftime('%H:%M')
 
                     if 'price' not in product:
                         product['price'] = {}
@@ -95,18 +96,32 @@ class Scraper(Task):
                                 product['competitors'][store_name][today] = store['price']
                                 keys = list(product['competitors'][store_name].keys())
                                 keys.sort()
-                                if len(keys) > 7:
-                                    product['competitors'][store_name].pop(keys[0])
+                                six_days_ago = str(date.today() - timedelta(days=6))
+                                for key in keys:
+                                    if key < six_days_ago:
+                                        product['competitors'][store_name].pop(key)
                             else:
                                 product['competitors'][store_name] = {}
-                                product['competitors'][store_name][today] = store['price']
+                                product['competitors'][store_name][today] = {
+                                    now: {
+                                        'price': store['price'],
+                                        'shipping_cost': store['shipping_cost'],
+                                        'payment_cost': store['payment_cost']
+                                    }
+                                }
                             self.store_model.create(store_name)
                             self.competitor_model.create_if_not_exist(store_name, store['url'], store['logo'])
                     else:
                         product['competitors'] = {}
                         for store_name, store in data['competitors'].items():
                             product['competitors'][store_name] = {}
-                            product['competitors'][store_name][today] = store['price']
+                            product['competitors'][store_name][today] = {
+                                now: {
+                                    'price': store['price'],
+                                    'shipping_cost': store['shipping_cost'],
+                                    'payment_cost': store['payment_cost']
+                                }
+                            }
                             self.store_model.create(store_name)
                             self.competitor_model.create_if_not_exist(store_name, store['url'], store['logo'])
                     self.logger.info('updated %s', product['url'])

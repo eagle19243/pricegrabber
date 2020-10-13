@@ -89,7 +89,7 @@ function Configurations({dispatch, interval}) {
 const mapStateToProps = ({ configuration }) => {
   const { interval } = configuration;
   return {
-    interval: interval
+    interval,
   }
 }
 

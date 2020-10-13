@@ -21,9 +21,10 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CardIcon from "components/Card/CardIcon.js";
-import Table from "components/Table/Table.js";
+import PriceTable from "components/PriceTable/PriceTable";
 
 import { addProduct, updateProduct, getProduct } from "actions/ProductActions";
+import { getConfig } from "actions/ConfigurationActions";
 
 import {
   grayColor,
@@ -71,7 +72,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-function ProductDetail({ dispatch, match, currentProduct }) {
+function ProductDetail({ dispatch, match, currentProduct, interval }) {
   const classes = useStyles();
   const productId = match.params.id;
   const [code, setCode] = React.useState("");
@@ -98,7 +99,16 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   const [operator, setOperator] = React.useState("+");
   const [storeNames, setStoreNames] = React.useState([]);
 
+  const getHour = (hour) => {
+    if (hour < 10) {
+      return `0${hour}`;
+    }
+
+    return hour;
+  }
+
   React.useEffect(() => {
+    dispatch(getConfig());
     dispatch(getProduct(productId));
   }, []);  
   React.useEffect(() => {
@@ -137,18 +147,36 @@ function ProductDetail({ dispatch, match, currentProduct }) {
       setReviewCount(currentProduct.review_count);
       setReviewRating(currentProduct.review_rating);
       console.log(currentProduct);
-      if (currentProduct.competitors && Object.keys(currentProduct.competitors).length > 0) {
+      if (currentProduct.competitors && Object.keys(currentProduct.competitors).length > 0 && interval > 0) {
         const rowData = [];
         const columnData = [];
         const competitors = Object.keys(currentProduct.competitors);
         
         for (const competitor of competitors) {
-          const data = [competitor];
+          const data = {
+            storeName: competitor,
+            prices: [],
+          };
           for (const date in currentProduct.competitors[competitor]) {
             if (!columnData.includes(date)) {
               columnData.push(date);
             }
-            data.push(currentProduct.competitors[competitor][date]);
+            
+            const times = Object.keys(currentProduct.competitors[competitor][date]);
+            for (let i=0; i<24; i+=interval) {
+              const startTime   = `${getHour(i)}:00`;
+              const endTime     = `${getHour(i + interval)}:00`;
+              let filteredTimes = times.filter((time) => time > startTime && time < endTime);
+
+              if (filteredTimes.length > 0) {
+                const detail = currentProduct.competitors[competitor][date][filteredTimes[0]];
+                data.prices.push({
+                  time: filteredTimes[0],
+                  data: [detail['price'], detail['shipping_cost'], detail['payment_cost'], 
+                    detail['price']  + detail['shipping_cost'] + detail['payment_cost']]
+                });
+              }
+            }
           }
           rowData.push(data);
         }
@@ -193,7 +221,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
         }
       }
     }
-  }, [currentProduct]);
+  }, [currentProduct, interval]);
 
   const validateSkroutzURL = value => {
     return /https:\/\/www.skroutz.gr\/.*\.html/g.test(value);
@@ -322,7 +350,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
             <CardBody>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12} lg={12}>
-                  <Table
+                  <PriceTable
                     tableHeaderColor="primary"
                     tableHead={tableHead}
                     tableData={tableData}
@@ -846,10 +874,12 @@ function ProductDetail({ dispatch, match, currentProduct }) {
   );
 }
 
-const mapStateToProps = ({ product }) => {
+const mapStateToProps = ({ product, configuration }) => {
   const { currentProduct } = product;
+  const { interval } = configuration;
   return {
     currentProduct,
+    interval
   }
 }
 
