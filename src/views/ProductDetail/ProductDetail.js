@@ -155,7 +155,7 @@ function ProductDetail({ dispatch, match, currentProduct }) {
 
         columnData.sort();
         setTableData(rowData);
-        setTableHead(['Shop'].concat(columnData));
+        setTableHead(['Store'].concat(columnData));
         setStoreNames(competitors);
       }
 
