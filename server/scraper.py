@@ -173,11 +173,11 @@ class Scraper(Task):
             product_ids = list(data['product_cards'].keys())
             shipping_payment_data = self.get_shipping_payment(product_ids)
 
-            for competitor_name, data in competitors.items():
-                shipping_payment_info = next(item for item in shipping_payment_data if str(item['id']) == str(data['product_id']))
-                data['shipping_cost'] = self.get_cost(shipping_payment_info['shipping_cost'])
-                data['payment_cost'] = self.get_cost(shipping_payment_info['payment_method_cost'])
-                competitors[competitor_name] = data
+            for competitor_name, detail in competitors.items():
+                shipping_payment_info = next(item for item in shipping_payment_data if str(item['id']) == str(detail['product_id']))
+                detail['shipping_cost'] = self.get_cost(shipping_payment_info['shipping_cost'])
+                detail['payment_cost'] = self.get_cost(shipping_payment_info['payment_method_cost'])
+                competitors[competitor_name] = detail
 
             return {
                 'name': name,
@@ -266,17 +266,21 @@ class Scraper(Task):
         script = 'const url = "%s";' % url + 'const product_ids = [%s];' % ','.join(product_ids) + '''
             function getData(url, product_ids) {
                 return new Promise((resolve) => {
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: {"product_ids": product_ids},
-                        success: (response) => {
-                            resolve(response);
-                        },
-                        error: (xhr)  => {
-                            resolve([]);
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", url, true);
+                    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                    xhr.onreadystatechange = function() {
+                        console.log(xhr);
+                        if (this.readyState === XMLHttpRequest.DONE) {
+                            if (this.status === 200) {
+                                resolve(JSON.parse(xhr.responseText));
+                            } else {
+                                resolve([]);
+                            }
                         }
-                    });
+                    }
+                    const data = JSON.stringify({"product_ids": product_ids});
+                    xhr.send(data);
                 });
             }
             const response = await getData(url, product_ids);
