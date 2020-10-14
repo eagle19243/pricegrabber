@@ -171,7 +171,7 @@ function ProductDetail({ dispatch, match, currentProduct, interval }) {
               if (filteredTimes.length > 0) {
                 const detail = currentProduct.competitors[competitor][date][filteredTimes[0]];
                 data.prices.push({
-                  time: filteredTimes[0],
+                  time: `${startTime} - ${endTime}`,
                   data: [detail['price'], detail['shipping_cost'], detail['payment_cost'], 
                     detail['price']  + detail['shipping_cost'] + detail['payment_cost']]
                 });
