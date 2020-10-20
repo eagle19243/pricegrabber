@@ -230,31 +230,33 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
   return (
     <div>
       <GridContainer>
-        <GridItem xs={12}>
-          <Card chart>
-            <CardHeader color="info">
-              <ChartistGraph
-                className="ct-chart"
-                data={pieChartData}
-                type="Pie"
-                options={{
-                  height: "300px",
-                  align: "center",
-                }}
-                responsiveOptions={[[
-                  'screen and (min-width: 1024px)', {
-                    labelOffset: 80,
-                    chartPadding: 20
-                  }
-                ]]}
-                style={{
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              />
-            </CardHeader>
-          </Card>
-        </GridItem>
+        {(pieChartData.labels && pieChartData.labels.length > 0) && 
+          <GridItem xs={12}>
+            <Card chart>
+              <CardHeader color="info">
+                <ChartistGraph
+                  className="ct-chart"
+                  data={pieChartData}
+                  type="Pie"
+                  options={{
+                    height: "300px",
+                    align: "center",
+                  }}
+                  responsiveOptions={[[
+                    'screen and (min-width: 1024px)', {
+                      labelOffset: 80,
+                      chartPadding: 20
+                    }
+                  ]]}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                />
+              </CardHeader>
+            </Card>
+          </GridItem>
+        }
         <GridItem xs={12}>
           <Card chart>
             <CardHeader color="success">
