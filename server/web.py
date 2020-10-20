@@ -227,9 +227,11 @@ def get_competitor():
                     prices = []
                     for key in product['competitors'].keys():
                         if today in product['competitors'][key]:
-                            prices.append(product['competitors'][key][today])
+                            time = product['competitors'][key][today].keys()[-1]
+                            prices.append(product['competitors'][key][today][time])
                     prices.sort()
-                    position = prices.index(product['competitors'][store_name][today])
+                    time = product['competitors'][store_name][today].keys()[-1]
+                    position = prices.index(product['competitors'][store_name][today][time])
 
                     if str(position) in data['positions']:
                         data['positions'][str(position)] = data['positions'][str(position)] + 1
