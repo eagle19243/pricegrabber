@@ -50,6 +50,11 @@ class Scraper(Task):
 
     def run(self):
         self.logger.info('scraping started')
+
+        content = self.get_content(self.start_url)
+        if not content:
+            self.bypass(self.start_url)
+
         self.driver.get(self.start_url)
 
         config = self.configuration_model.find_one()
