@@ -93,7 +93,13 @@ class Scraper(Task):
                     if 'competitors' in product:
                         for store_name, store in data['competitors'].items():
                             if store_name in product['competitors']:
-                                product['competitors'][store_name][today] = store['price']
+                                product['competitors'][store_name][today] = {
+                                    now: {
+                                        'price': store['price'],
+                                        'shipping_cost': store['shipping_cost'],
+                                        'payment_cost': store['payment_cost']
+                                    }
+                                }
                                 keys = list(product['competitors'][store_name].keys())
                                 keys.sort()
                                 six_days_ago = str(date.today() - timedelta(days=6))
