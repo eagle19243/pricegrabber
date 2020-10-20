@@ -257,66 +257,68 @@ function CompetitorDetail({ dispatch, match, currentCompetitor, allStoreNames })
             </Card>
           </GridItem>
         }
-        <GridItem xs={12}>
-          <Card chart>
-            <CardHeader color="success">
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={6} lg={4}>
-                  <ChartistGraph
-                    className="ct-chart"
-                    data={lineChartData}
-                    type="Line"
-                    options={{
-                      lineSmooth: window.Chartist.Interpolation.cardinal({
-                        tension: 0
-                      }),
-                      low: 0,
-                      high: 2000, 
-                      chartPadding: {
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        left: 0
-                      },
-                      plugins: [
-                        window.Chartist.plugins.tooltip()
-                      ],
-                    }}
-                    listener={{
-                      draw: function(data) {
-                        if (data.type === "line" || data.type === "area") {
-                          data.element.animate({
-                            d: {
-                              begin: 600,
-                              dur: 700,
-                              from: data.path
-                                .clone()
-                                .scale(1, 0)
-                                .translate(0, data.chartRect.height())
-                                .stringify(),
-                              to: data.path.clone().stringify(),
-                              easing: window.Chartist.Svg.Easing.easeOutQuint
-                            }
-                          });
-                        } else if (data.type === "point") {
-                          data.element.animate({
-                            opacity: {
-                              begin: (data.index + 1) * 80,
-                              dur: 500,
-                              from: 0,
-                              to: 1,
-                              easing: "ease"
-                            }
-                          });
+        {(lineChartData.labels && lineChartData.labels.length > 0) &&
+          <GridItem xs={12}>
+            <Card chart>
+              <CardHeader color="success">
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={6} lg={4}>
+                    <ChartistGraph
+                      className="ct-chart"
+                      data={lineChartData}
+                      type="Line"
+                      options={{
+                        lineSmooth: window.Chartist.Interpolation.cardinal({
+                          tension: 0
+                        }),
+                        low: 0,
+                        high: 2000, 
+                        chartPadding: {
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          left: 0
+                        },
+                        plugins: [
+                          window.Chartist.plugins.tooltip()
+                        ],
+                      }}
+                      listener={{
+                        draw: function(data) {
+                          if (data.type === "line" || data.type === "area") {
+                            data.element.animate({
+                              d: {
+                                begin: 600,
+                                dur: 700,
+                                from: data.path
+                                  .clone()
+                                  .scale(1, 0)
+                                  .translate(0, data.chartRect.height())
+                                  .stringify(),
+                                to: data.path.clone().stringify(),
+                                easing: window.Chartist.Svg.Easing.easeOutQuint
+                              }
+                            });
+                          } else if (data.type === "point") {
+                            data.element.animate({
+                              opacity: {
+                                begin: (data.index + 1) * 80,
+                                dur: 500,
+                                from: 0,
+                                to: 1,
+                                easing: "ease"
+                              }
+                            });
+                          }
                         }
-                      }
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-            </CardHeader>
-          </Card>
-        </GridItem>
+                      }}
+                    />
+                  </GridItem>
+                </GridContainer>
+              </CardHeader>
+            </Card>
+          </GridItem>
+        }
         <GridItem xs={12}>
           <Card>
             <CardBody>
