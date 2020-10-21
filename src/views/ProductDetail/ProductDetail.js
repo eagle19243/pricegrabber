@@ -166,7 +166,9 @@ function ProductDetail({ dispatch, match, currentProduct, interval }) {
             for (let i=0; i<24; i+=interval) {
               const startTime   = `${getHour(i)}:00`;
               const endTime     = `${getHour(i + interval)}:00`;
-              let filteredTimes = times.filter((time) => time > startTime && time < endTime);
+              let filteredTimes = times.filter(
+                (time) => time > startTime && time < endTime
+              );
 
               if (filteredTimes.length > 0) {
                 const detail = currentProduct.competitors[competitor][date][filteredTimes[0]];
