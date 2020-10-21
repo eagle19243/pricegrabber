@@ -157,28 +157,38 @@ function ProductDetail({ dispatch, match, currentProduct, interval }) {
             storeName: competitor,
             prices: [],
           };
-          for (const date in currentProduct.competitors[competitor]) {
-            if (!columnData.includes(date)) {
-              columnData.push(date);
-            }
-            
-            const times = Object.keys(currentProduct.competitors[competitor][date]);
-            for (let i=0; i<24; i+=interval) {
-              const startTime   = `${getHour(i)}:00`;
-              const endTime     = `${getHour(i + interval)}:00`;
-              let filteredTimes = times.filter(
+
+          for (let i=0; i<24; i+=interval) {
+            const startTime   = `${getHour(i)}:00`;
+            const endTime     = `${getHour(i + interval)}:00`;
+            const prices      = {
+              time: `${startTime} - ${endTime}`,
+              data: []
+            };
+
+            for (const date in currentProduct.competitors[competitor]) {
+              if (!columnData.includes(date)) {
+                columnData.push(date);
+              }
+
+              const times = Object.keys(currentProduct.competitors[competitor][date]);
+              const filteredTimes = times.filter(
                 (time) => time > startTime && time < endTime
               );
-
               if (filteredTimes.length > 0) {
                 const detail = currentProduct.competitors[competitor][date][filteredTimes[0]];
-                data.prices.push({
-                  time: `${startTime} - ${endTime}`,
-                  data: [detail['price'], detail['shipping_cost'], detail['payment_cost'], 
-                    detail['price']  + detail['shipping_cost'] + detail['payment_cost']]
-                });
+                prices.data.push(detail['price']);
+                prices.data.push(detail['shipping_cost']);
+                prices.data.push(detail['payment_cost']);
+                prices.data.push(detail['price']  + detail['shipping_cost'] + detail['payment_cost']);
+              } else {
+                prices.data.push('');
+                prices.data.push('');
+                prices.data.push('');
+                prices.data.push('');
               }
             }
+            data.prices.push(prices);
           }
           rowData.push(data);
         }
