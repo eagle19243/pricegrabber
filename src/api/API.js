@@ -5,7 +5,7 @@ const baseURL = config.apiURL;
 const api = apisauce.create({
   baseURL,
   headers: {},
-  timeout: 30000
+  timeout: 120000
 });
 
 const login = (email, password) => {
